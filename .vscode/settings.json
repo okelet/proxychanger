@@ -1,0 +1,4 @@
+{
+    "go.buildTags": "gtk_3_18",
+    "go.lintOnSave": "off"
+}

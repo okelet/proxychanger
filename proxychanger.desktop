@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Proxy changer
+Exec=sh -c "\${HOME}/.local/bin/proxychanger"
+Icon=proxychanger
+Categories=Network;GTK;
