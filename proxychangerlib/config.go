@@ -2,6 +2,7 @@ package proxychangerlib
 
 import (
 	"encoding/json"
+	"net"
 	"regexp"
 	"strconv"
 	"strings"
@@ -576,12 +577,14 @@ func (c *Configuration) UpdateProxyFromData(save bool, p *Proxy, setSlug bool, n
 		}
 	}
 
-	// TODO
-	/*
-		for i, v := range newMatchingIps {
-
+	if setIps {
+		for i, ip := range newMatchingIps {
+			_, _, err := net.ParseCIDR(ip)
+			if err != nil {
+				return errors.New(MyGettextv("The element %v in the list of IPs (%v) is not valid: %v", i+1, ip, err)), "matchingips"
+			}
 		}
-	*/
+	}
 
 	if setSlug {
 		p.Slug = newSlug
