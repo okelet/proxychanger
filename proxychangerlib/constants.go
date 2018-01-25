@@ -1,7 +1,10 @@
 package proxychangerlib
 
 import (
+	"fmt"
+	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
@@ -38,6 +41,14 @@ var DEFAULT_CONFIG_PATH string
 
 var Log loggo.Logger
 
+// Replace the default formatter with a new one that respects time zone
+// https://github.com/juju/loggo/blob/master/formatter.go
+func TzLoggoFormatter(entry loggo.Entry) string {
+	ts := entry.Timestamp.Format("2006-01-02 15:04:05")
+	filename := filepath.Base(entry.Filename)
+	return fmt.Sprintf("%s %s %s %s:%d %s", ts, entry.Level, entry.Module, filename, entry.Line, entry.Message)
+}
+
 func InitConstants() error {
 
 	DEFAULT_EXCLUDED_INTERFACES_REGEXPS = []string{"^lo$", "^virbr[0-9]+$", "virbr[0-9]+-nic", "docker[0-9]+"}
@@ -64,12 +75,19 @@ func InitConstants() error {
 		MaxBackups: 7,
 	}
 
+	// Always log to file (removing the default standard output)
 	Log.SetLogLevel(loggo.WARNING)
-	// loggo.ReplaceDefaultWriter(loggo.New(os.Stderr))
-	loggo.RegisterWriter("file", loggo.NewSimpleWriter(fileRotateWriter, func(entry loggo.Entry) string {
-		return loggo.DefaultFormatter(entry)
+	loggo.ReplaceDefaultWriter(loggo.NewSimpleWriter(fileRotateWriter, func(entry loggo.Entry) string {
+		return TzLoggoFormatter(entry)
 	}))
 
 	return nil
 
+}
+
+// Add a new writer to log to the error output
+func AddErrorOutputLogging() {
+	loggo.RegisterWriter("stderr", loggo.NewSimpleWriter(os.Stderr, func(entry loggo.Entry) string {
+		return TzLoggoFormatter(entry)
+	}))
 }

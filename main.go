@@ -44,6 +44,7 @@ func main() {
 	app.HelpFlag.Short('h')
 	app.VersionFlag.Short('v')
 	logLevel := app.Flag("log-level", proxychangerlib.MyGettextv("Log level")).Short('l').String()
+	logErrorOutput := app.Flag("error-output", proxychangerlib.MyGettextv("Log to error output")).Bool()
 
 	indicatorCommand := app.Command("indicator", proxychangerlib.MyGettextv("Start as an indicator"))
 	configFile := indicatorCommand.Flag("config", proxychangerlib.MyGettextv("Configuration file")).Short('c').ExistingFile()
@@ -70,6 +71,10 @@ func main() {
 	} else {
 		// TODO: Change log level according to config
 		// proxychangerlib.Log.SetLogLevel(level)
+	}
+
+	if logErrorOutput != nil && *logErrorOutput {
+		proxychangerlib.AddErrorOutputLogging()
 	}
 
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
