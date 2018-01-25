@@ -245,16 +245,16 @@ func (w *ProxyDialog) OnButtonOkClicked() {
 	err, field := w.ConfigWindow.Indicator.Config.UpdateProxyFromData(
 		true,
 		p,
-		slug,
-		name,
-		"http",
-		address,
-		port,
-		username,
-		password,
-		cleanExceptions,
-		cleanMatchingIps,
-		activateScript,
+		true, slug,
+		true, name,
+		true, "http",
+		true, address,
+		true, port,
+		true, username,
+		true, password,
+		true, cleanExceptions,
+		true, cleanMatchingIps,
+		true, activateScript,
 	)
 	if err != nil {
 		goutils.ShowMessage(&w.Dialog.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), err.Error())

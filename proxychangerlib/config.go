@@ -460,24 +460,24 @@ func (c *Configuration) IsSlugAlreadyInUse(slug string, proxyToExclude *Proxy) b
 	return false
 }
 
-func (c *Configuration) AddProxyFromData(save bool, newSlug, newName, newProtocol, newAddress, newUsername, newPassword string, newPort int, newExceptions, newMatchingIps []string, activateScript string) (error, string) {
+func (c *Configuration) AddProxyFromData(save bool, setSlug bool, newSlug string, setName bool, newName string, setProtocol bool, newProtocol string, setAddress bool, newAddress string, setUsername bool, newUsername string, setPassword bool, newPassword string, setPort bool, newPort int, setExceptions bool, newExceptions []string, setIps bool, newMatchingIps []string, setScript bool, activateScript string) (error, string) {
 	p, err := NewProxyFromMap(c, goutils.NewEmptyMapHelper(), false)
 	if err != nil {
 		return errors.Wrapf(err, "Error creating new proxy"), "_error_creating"
 	}
-	return c.UpdateProxyFromData(save, p, newSlug, newName, newProtocol, newAddress, newPort, newUsername, newPassword, newExceptions, newMatchingIps, activateScript)
+	return c.UpdateProxyFromData(save, p, setSlug, newSlug, setName, newName, setProtocol, newProtocol, setAddress, newAddress, setPort, newPort, setUsername, newUsername, setPassword, newPassword, setExceptions, newExceptions, setIps, newMatchingIps, setScript, activateScript)
 }
 
 func (c *Configuration) AddProxy(save bool, p *Proxy) (error, string) {
 	return c.UpdateProxy(save, p)
 }
 
-func (c *Configuration) UpdateProxyFromUuid(save bool, uuid, newSlug, newName, newProtocol, newAddress string, newPort int, newUsername, newPassword string, newExceptions, newMatchingIps []string, activateScript string) (error, string) {
+func (c *Configuration) UpdateProxyFromUuid(save bool, uuid string, setSlug bool, newSlug string, setName bool, newName string, setProtocol bool, newProtocol string, setAddress bool, newAddress string, setPort bool, newPort int, setUsername bool, newUsername string, setPassword bool, newPassword string, setExceptions bool, newExceptions []string, setIps bool, newMatchingIps []string, setScript bool, activateScript string) (error, string) {
 	p := c.GetProxyWithUuid(uuid)
 	if p == nil {
 		return errors.Errorf("Proxy with UUID %v not found", uuid), "_uuid_not_found"
 	}
-	return c.UpdateProxyFromData(save, p, newSlug, newName, newProtocol, newAddress, newPort, newUsername, newPassword, newExceptions, newMatchingIps, activateScript)
+	return c.UpdateProxyFromData(save, p, setSlug, newSlug, setName, newName, setProtocol, newProtocol, setAddress, newAddress, setPort, newPort, setUsername, newUsername, setPassword, newPassword, setExceptions, newExceptions, setIps, newMatchingIps, setScript, activateScript)
 }
 
 func (c *Configuration) CreateUniqueSlug(name string, proxyToExclude *Proxy) string {
@@ -510,60 +510,117 @@ func (c *Configuration) CreateUniqueName(baseName string, proxyToExclude *Proxy)
 	}
 }
 
-func (c *Configuration) UpdateProxyFromData(save bool, p *Proxy, newSlug, newName, newProtocol, newAddress string, newPort int, newUsername, newPassword string, newExceptions, newMatchingIps []string, activateScript string) (error, string) {
+func (c *Configuration) UpdateProxyFromData(save bool, p *Proxy, setSlug bool, newSlug string, setName bool, newName string, setProtocol bool, newProtocol string, setAddress bool, newAddress string, setPort bool, newPort int, setUsername bool, newUsername string, setPassword bool, newPassword string, setExceptions bool, newExceptions []string, setIps bool, newMatchingIps []string, setScript bool, activateScript string) (error, string) {
 
 	var err error
 
-	if newName == "" {
-		return errors.New(MyGettextv("Name can not be empty")), "name"
+	if setName {
+		if newName == "" {
+			return errors.New(MyGettextv("Name can not be empty")), "name"
+		}
+	} else {
+		if p.Name == "" {
+			return errors.New(MyGettextv("Name can not be empty")), "name"
+		} else if c.IsNameAlreadyInUse(newName, p) {
+			return errors.New(MyGettextv("Proxy with name %v already exists", newName)), "name"
+		}
 	}
 
-	if c.IsNameAlreadyInUse(newName, p) {
-		return errors.New(MyGettextv("Proxy with name %v already exists", newName)), "name"
+	if setSlug {
+		if newSlug == "" {
+			return errors.New(MyGettextv("Slug can not be empty")), "slug"
+		} else if c.IsSlugAlreadyInUse(newSlug, p) {
+			return errors.New(MyGettextv("Slug already in use")), "slug"
+		}
+	} else {
+		if p.Slug == "" {
+			newSlug = c.CreateUniqueSlug(newName, p)
+		} else if c.IsSlugAlreadyInUse(newSlug, p) {
+			return errors.New(MyGettextv("Proxy with slug %v already exists", newSlug)), "slug"
+		}
 	}
 
-	if newSlug == "" {
-		newSlug = c.CreateUniqueSlug(newName, p)
-	} else if c.IsSlugAlreadyInUse(newSlug, p) {
-		return errors.New(MyGettextv("Proxy with slug %v already exists", newSlug)), "slug"
+	if setProtocol {
+		if newProtocol == "" {
+			return errors.New(MyGettextv("Protocol can not be empty")), "protocol"
+		}
+	} else {
+		if p.Protocol == "" {
+			return errors.New(MyGettextv("Protocol can not be empty")), "protocol"
+		}
 	}
 
-	if newAddress == "" {
-		return errors.New(MyGettextv("Address can not be empty")), "slug"
+	if setAddress {
+		if newAddress == "" {
+			return errors.New(MyGettextv("Address can not be empty")), "address"
+		}
+	} else {
+		if p.Address == "" {
+			return errors.New(MyGettextv("Address can not be empty")), "address"
+		}
 	}
 
-	if newPort <= 0 {
-		return errors.New(MyGettextv("Port must be greater than 0")), "port"
+	if setPort {
+		if newPort <= 0 {
+			return errors.New(MyGettextv("Port must be greater than 0")), "port"
+		}
+		if newPort >= 65535 {
+			return errors.New(MyGettextv("Port must be lower than 65535")), "port"
+		}
+	} else {
+		if p.Port <= 0 {
+			return errors.New(MyGettextv("Port must be greater than 0")), "port"
+		}
+		if p.Port >= 65535 {
+			return errors.New(MyGettextv("Port must be lower than 65535")), "port"
+		}
 	}
 
-	if newPort >= 65535 {
-		return errors.New(MyGettextv("Port must be lower than 65535")), "port"
-	}
-
+	// TODO
 	/*
 		for i, v := range newMatchingIps {
 
 		}
 	*/
 
-	p.Slug = newSlug
-	p.Name = newName
-	p.Protocol = newProtocol
-	p.Address = newAddress
-	p.Port = newPort
-	p.Username = newUsername
-	p.Exceptions = newExceptions
-	p.MatchingIps = newMatchingIps
-	p.ActivateScript = activateScript
-	if newPassword != "" {
-		err = c.SetPassword(p.UUID, newPassword)
-		if err != nil {
-			return errors.Wrap(err, MyGettextv("Error saving password in keyring")), "password"
-		}
-	} else {
-		err = c.DeletePassword(p.UUID)
-		if err != nil {
-			return errors.Wrap(err, MyGettextv("Error saving password in keyring")), "password"
+	if setSlug {
+		p.Slug = newSlug
+	}
+	if setName {
+		p.Name = newName
+	}
+	if setProtocol {
+		p.Protocol = newProtocol
+	}
+	if setAddress {
+		p.Address = newAddress
+	}
+	if setPort {
+		p.Port = newPort
+	}
+	if setUsername {
+		p.Username = newUsername
+	}
+	if setExceptions {
+		p.Exceptions = newExceptions
+	}
+	if setIps {
+		p.MatchingIps = newMatchingIps
+	}
+	if setScript {
+		p.ActivateScript = activateScript
+	}
+	if setPassword {
+		if newPassword != "" {
+			err = c.SetPassword(p.UUID, newPassword)
+			if err != nil {
+				return errors.Wrap(err, MyGettextv("Error saving password in keyring")), "password"
+			}
+		} else {
+			err = c.DeletePassword(p.UUID)
+			if err != nil {
+				return errors.Wrap(err, MyGettextv("Error saving password in keyring")), "password"
+			}
 		}
 	}
 
