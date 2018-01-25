@@ -62,12 +62,27 @@ curl -sSfL https://github.com/okelet/proxychanger/raw/master/install.sh | bash
 After installation, you will find a shortcut in the applications menu. 
 
 
+## Screenshots
+
+![Configuration window](doc/configuration.png "Configuration window")
+
+![Applications](doc/apps.png "Applications")
+
+![Global scripts](doc/global_scripts.png "Global scripts")
+
+![Proxy general settings](doc/proxy_general.png "Proxy general settings")
+
+![Proxy scripts](doc/proxy_scripts.png "Proxy scripts")
+
+![Indicator](doc/indicator.png "Indicator")
+
+
 ## Desktop dependencies
 
 In some Gnome Shell based desktops (for Example, Fedora15+), you will need the 
 [KStatusNotifierItem/AppIndicator Support](https://extensions.gnome.org/extension/615/appindicator-support/) Gnome Shell extension.
 
-As a quick guide, you will need the package `chrome-gnome-shell`; in Ubuntu, you can install it running this command:
+As a quick guide, you will need the package `chrome-gnome-shell`; in Fedora, you can install it running this command:
 
 ```bash
 sudo yum install chrome-gnome-shell
@@ -86,7 +101,7 @@ Update translations:
 bash update_translations.sh
 ```
 
-Reinstall from local folder after translations or something have changed (code, icon, shortcuts, assets...):
+Reinstall from local folder after translations or something have changed using the script [`install_dev.sh`](install_dev.sh) (code, icon, shortcuts, assets...):
 
 ```bash
 bash install_dev.sh
