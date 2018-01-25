@@ -54,7 +54,7 @@ func (a *AptProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 	err = ioutil.WriteFile(APT_PROXY_FILE, buff.Bytes(), 0640)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"https://github.com/okelet/proxychanger\">click here</a> for possible solutions", APT_PROXY_FILE, err)}
+		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"https://github.com/okelet/proxychanger/wiki/APT\">click here</a> for possible solutions", APT_PROXY_FILE, err)}
 	}
 	return &AppProxyChangeResult{a, "", ""}
 }

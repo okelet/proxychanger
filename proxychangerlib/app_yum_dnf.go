@@ -76,7 +76,7 @@ func (a *YumDnfProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = cfg.SaveTo(confFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v", confFile, err)}
+		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"https://github.com/okelet/proxychanger/wiki/Yum\">click here</a> for possible solutions", confFile, err)}
 	}
 
 	return &AppProxyChangeResult{a, "", ""}
