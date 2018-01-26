@@ -113,6 +113,8 @@ func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool,
 		// TODO Log
 	}
 
+	proxychangerlib.Log.SetLogLevel(config.LogLevel)
+
 	gtk.Init(nil)
 
 	i, err := proxychangerlib.NewIndicator(sessionBus, config, Version, cmdLogLevelSet, testMode)
