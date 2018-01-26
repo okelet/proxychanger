@@ -429,7 +429,8 @@ IPs can be especified in the following formats:
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xpad">5</property>
-                    <property name="label" translatable="yes">On proxy activate script</property>
+                    <property name="label" translatable="yes">On proxy activate script (&lt;a href="https://github.com/okelet/proxychanger/wiki/Scripts"&gt;help&lt;/a&gt;)</property>
+                    <property name="use_markup">True</property>
                   </object>
                 </child>
               </object>

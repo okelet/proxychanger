@@ -663,7 +663,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">5</property>
-                        <property name="label" translatable="yes">Before proxy change script</property>
+                        <property name="label" translatable="yes">Before proxy change script (&lt;a href="https://github.com/okelet/proxychanger/wiki/Scripts"&gt;help&lt;/a&gt;)</property>
+                        <property name="use_markup">True</property>
                       </object>
                     </child>
                   </object>
@@ -715,7 +716,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">5</property>
-                        <property name="label" translatable="yes">On deactivate proxy script</property>
+                        <property name="label" translatable="yes">On deactivate proxy script (&lt;a href="https://github.com/okelet/proxychanger/wiki/Scripts"&gt;help&lt;/a&gt;)</property>
+                        <property name="use_markup">True</property>
                       </object>
                     </child>
                   </object>
