@@ -1,8 +1,8 @@
 package proxychangerlib
 
 import (
-	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/juju/loggo"
 
@@ -378,54 +378,50 @@ func (i *Indicator) UpdateLabel() {
 
 func (i *Indicator) ShowLastExecutionResults() {
 
-	buff := bytes.NewBufferString("")
+	lines := []string{}
 	if i.Config.LastExecutionResults != nil {
 
 		changeScriptResult := i.Config.LastExecutionResults.ChangeScriptResult
 		if changeScriptResult != nil {
 			if changeScriptResult.Error != nil {
-				buff.WriteString(MyGettextv("Before proxy change script: ERROR (%v)", changeScriptResult.Error))
+				lines = append(lines, MyGettextv("Before proxy change script: ERROR (%v)", changeScriptResult.Error))
 			} else if changeScriptResult.Code != 0 {
-				buff.WriteString(MyGettextv("Before proxy change script: WARNING (%v, %v)", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("Before proxy change script: WARNING (%v, %v)", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
 			} else {
-				buff.WriteString(MyGettextv("Before proxy change script: OK (%v)", changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("Before proxy change script: OK (%v)", changeScriptResult.GetCombinedOutput()))
 			}
 		} else {
-			buff.WriteString(MyGettextv("Before proxy change script: <i>not configured</i>"))
+			lines = append(lines, MyGettextv("Before proxy change script: <i>not configured</i>"))
 		}
-		buff.WriteString("\n")
 
 		activateScriptResult := i.Config.LastExecutionResults.ActivateScriptResult
 		if activateScriptResult != nil {
 			if activateScriptResult.Error != nil {
-				buff.WriteString(MyGettextv("Activate proxy script: ERROR (%v)", activateScriptResult.Error))
+				lines = append(lines, MyGettextv("Activate proxy script: ERROR (%v)", activateScriptResult.Error))
 			} else if changeScriptResult.Code != 0 {
-				buff.WriteString(MyGettextv("Activate proxy script: WARNING (%v, %v)", activateScriptResult.Code, activateScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("Activate proxy script: WARNING (%v, %v)", activateScriptResult.Code, activateScriptResult.GetCombinedOutput()))
 			} else {
-				buff.WriteString(MyGettextv("Activate proxy script: OK (%v)", activateScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("Activate proxy script: OK (%v)", activateScriptResult.GetCombinedOutput()))
 			}
 		} else {
-			buff.WriteString(MyGettextv("Activate proxy script: <i>not configured</i>"))
+			lines = append(lines, MyGettextv("Activate proxy script: <i>not configured</i>"))
 		}
-		buff.WriteString("\n")
 
 		for _, r := range i.Config.LastExecutionResults.Results {
-			buff.WriteString(r.Application.GetSimpleName() + ": ")
 			if r.Skipped() {
-				buff.WriteString(MyGettextv("Skipped (%v)", r.SkippedMessage))
+				lines = append(lines, MyGettextv("%v: Skipped (%v)", r.Application.GetSimpleName(), r.SkippedMessage))
 			} else if r.Success() {
-				buff.WriteString("OK")
+				lines = append(lines, MyGettextv("%v: OK", r.Application.GetSimpleName()))
 			} else {
-				buff.WriteString(MyGettextv("ERROR: %v", r.ErrorMessage))
+				lines = append(lines, MyGettextv("%v: ERROR: %v", r.Application.GetSimpleName(), r.ErrorMessage))
 			}
-			buff.WriteString("\n")
 		}
 
 	} else {
-		buff.WriteString(MyGettextv("No proxy set yet."))
+		lines = append(lines, MyGettextv("No proxy set yet."))
 	}
 
-	goutils.ShowMessage(nil, gtk.MESSAGE_INFO, "Execution results", buff.String())
+	goutils.ShowMessage(nil, gtk.MESSAGE_INFO, "Execution results", strings.Join(lines, "\n"))
 
 }
 
