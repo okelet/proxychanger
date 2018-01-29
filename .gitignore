@@ -14,8 +14,17 @@
 vendor
 dist
 
+# Do not upload compiled translations
+*.mo
+
 # Ignore local compilation
 proxychanger
 
 # Backups
 *~
+
+# Temporary packaging
+proxychanger_inst.tar.gz
+.proxychanger
+.config
+.local

@@ -3,23 +3,21 @@ go: 1.9
 
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -qq libgtk-3-dev libappindicator3-dev tree
-- GTK_VERSION=$(pkg-config --modversion gtk+-3.0 | tr . _| cut -d '_' -f
-  1-2)
-- export BUILD_TAG=${TRAVIS_TAG}
-- if [ -z "${BUILD_TAG}" ]; then export BUILD_TAG="SNAP-$(date +%Y%m%d%H%M%S)-${TRAVIS_COMMIT}"; fi
-- echo "Using GTK version ${GTK_VERSION}"
-- echo "Version is ${BUILD_TAG}"
+- sudo apt-get install -qq libgtk-3-dev libappindicator3-dev tree gettext
+- export GTK_VERSION=$(pkg-config --modversion gtk+-3.0 | tr . _ | cut -d '_' -f 1-2)
 
-install: go get -t -tags gtk_${GTK_VERSION} -v ./...
-script: go build -tags gtk_${GTK_VERSION} -ldflags "-X main.Version=${BUILD_TAG}"
+install:
+- go get -t -tags gtk_${GTK_VERSION} -v ./...
+
+script:
+- ./build_package.sh
 
 deploy:
   provider: releases
   skip_cleanup: true
   api_key: $GITHUB_TOKEN
   file:
-  - proxychanger
+  - proxychanger_inst.tar.gz
   on:
     repo: okelet/proxychanger
     tags: true
