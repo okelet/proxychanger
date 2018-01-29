@@ -45,7 +45,7 @@ proxychanger -h
 * Notifications when a new proxy is set
 * CLI to list, add, edit, remove and set proxies
 * DBus control; if the indicator is running, the CLI connects to the already running instance
-* Run custom scripts when a proxy is set/unset (TODO)
+* Run custom scripts when a proxy is set/unset
 
 
 ## Installation 
@@ -64,15 +64,27 @@ After installation, you will find a shortcut in the applications menu.
 
 ## Screenshots
 
+Configuration window:
+
 ![Configuration window](doc/configuration.png "Configuration window")
+
+List of supported applications:
 
 ![Applications](doc/apps.png "Applications")
 
+Global scripts:
+
 ![Global scripts](doc/global_scripts.png "Global scripts")
+
+Proxy configuration:
 
 ![Proxy general settings](doc/proxy_general.png "Proxy general settings")
 
+Proxy scripts:
+
 ![Proxy scripts](doc/proxy_scripts.png "Proxy scripts")
+
+Indicator:
 
 ![Indicator](doc/indicator.png "Indicator")
 
@@ -118,7 +130,7 @@ Run:
 * Commit and push the latest changes
 * Wait for Travis to [build ok](https://travis-ci.org/okelet/proxychanger)
 * Tag the new version (`git tag xxxx`)
-* Commit the tag (`git push --tags`)
+* Push the tag (`git push --tags`)
 * Travis should build again successfully and upload the binary to Github
 
 
