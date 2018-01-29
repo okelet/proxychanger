@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ -z "${GTK_VERSION}" ]; then
     export GTK_VERSION=$(pkg-config --modversion gtk+-3.0 | tr . _ | cut -d '_' -f 1-2)
 fi
