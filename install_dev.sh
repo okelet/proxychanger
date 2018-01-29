@@ -6,6 +6,10 @@
 #UNDER=$(tput smul)
 #BOLD=$(tput bold)
 
+APP_PATH=${HOME}/tmp/proxychanger
+
+######################################################################
+
 IS_DEBIAN=0
 IS_REDHAT=0
 if [ -f /etc/debian_version ]; then
@@ -20,6 +24,8 @@ else
     echo "Unsupported operating system."
     exit 1
 fi
+
+######################################################################
 
 function check_dependency() {
     local DEP=$1
@@ -99,6 +105,7 @@ for i in "${DEPENDENCIES[@]}" ; do
     fi
 done
 
+######################################################################
 
 # Test for some default go installations
 if [[ -z "$(which go)" && -e "/usr/lib/go-1.9/bin/go" ]]; then
@@ -134,11 +141,34 @@ if [ -z "${GOPATH}" ]; then
     echo "Detected empty GOPATH; auto-set to ${GOPATH}."
 fi
 
+######################################################################
+
 [ ! -e ${HOME}/.proxychanger ] && mkdir ${HOME}/.proxychanger
+
+echo "Generating assets..."
+OUT=$(go-bindata -prefix proxychangerlib -pkg proxychangerlib -o proxychangerlib/assets.go proxychangerlib/assets/... 2>&1)
+RET=$?
+if [ ${RET} -ne 0 ]; then
+    echo "Error generating assets (${RET}): ${OUT}"
+    exit 1
+fi
+
+echo "Compiling translations..."
+for i in $(find locale -name "*.po") ; do
+    SRC_DIR=$(dirname "${i}")
+    SOURCE=${i}
+    DEST="${SRC_DIR}/$(basename "${i}" .po).mo"
+    OUT=$(msgfmt "${SOURCE}" -o "${DEST}" 2>&1)
+    RET=$?
+    if [ ${RET} -ne 0 ]; then
+        echo "Error compiling translation for ${SOURCE} (${RET}): ${OUT}"
+        exit 1
+    fi
+done
 
 echo "Installing translations..."
 [ -e ${HOME}/.proxychanger/locale ] && rm -Rf ${HOME}/.proxychanger/locale
-OUT=$(cp -r locale ${HOME}/.proxychanger/ 2>&1)
+OUT=$(find locale -name "*.mo" | xargs cp --parents -v -t ~/.proxychanger 2>&1)
 RET=$?
 if [ $RET -ne 0 ]; then
     echo "Error installing translations (${RET}): ${OUT}"
@@ -155,41 +185,46 @@ if [ ${RET} -ne 0 ]; then
 fi
 
 echo "Installing applications shortcut..."
-[ ! -e ${HOME}/.local/share/applications ] && mkdir -p ${HOME}/.local/share/applications
-OUT=$(cp proxychanger.desktop ${HOME}/.local/share/applications/proxychanger.desktop 2>&1)
+SHORTCUT_FILE="${HOME}/.local/share/applications/proxychanger.desktop"
+[ ! -e "${HOME}/.local/share/applications" ] && mkdir -p "${HOME}/.local/share/applications"
+OUT=$(cp proxychanger.desktop ${SHORTCUT_FILE} 2>&1)
 RET=$?
 if [ ${RET} -ne 0 ]; then
     echo "Error installing applications shortcut (${RET}): ${OUT}"
     exit 1
 fi
+sed -i -e "s|^Exec=.*|Exec=${APP_PATH}|" "${SHORTCUT_FILE}"
 
 echo "Installing auto start shortcut..."
-[ ! -e ${HOME}/.config/autostart ] && mkdir -p ${HOME}/.config/autostart
-OUT=$(cp proxychanger.desktop ${HOME}/.config/autostart/proxychanger.desktop 2>&1)
+AUTOSTART_FILE="${HOME}/.config/autostart/proxychanger.desktop"
+if [ -f "${AUTOSTART_FILE}" ]; then
+    AUTOSTART_OPTS="$(egrep -i "^X-GNOME-Autostart-enabled" "${AUTOSTART_FILE}")"
+fi
+[ ! -e "${HOME}/.config/autostart" ] && mkdir -p "${HOME}/.config/autostart"
+OUT=$(cp proxychanger.desktop ${AUTOSTART_FILE} 2>&1)
 RET=$?
 if [ ${RET} -ne 0 ]; then
     echo "Error installing auto start shortcut (${RET}): ${OUT}"
     exit 1
 fi
-
-echo "Generating assets..."
-OUT=$(go-bindata -prefix proxychangerlib -pkg proxychangerlib -o proxychangerlib/assets.go proxychangerlib/assets/... 2>&1)
-RET=$?
-if [ ${RET} -ne 0 ]; then
-    echo "Error generating assets (${RET}): ${OUT}"
-    exit 1
+if [ -n "${AUTOSTART_OPTS}" ]; then
+    echo "${AUTOSTART_OPTS}" >> "${AUTOSTART_FILE}"
 fi
+sed -i -e "s|^Exec=.*|Exec=${APP_PATH}|" "${AUTOSTART_FILE}"
 
-echo "Building application..."
+echo "Compiling application..."
 [ ! -r ~/tmp ] && mkdir ~/tmp
-OUT=$(go get -tags gtk_$(pkg-config --modversion gtk+-3.0 | tr . _| cut -d '_' -f 1-2) 2>&1)
+OUT=$(go get -tags gtk_$(pkg-config --modversion gtk+-3.0 | tr . _ | cut -d '_' -f 1-2) 2>&1)
 RET=$?
 if [ $RET -eq 0 ]; then
     OUT=$(go build -o ~/tmp/proxychanger -tags gtk_$(pkg-config --modversion gtk+-3.0 | tr . _| cut -d '_' -f 1-2) 2>&1)
     RET=$?
-fi
-if [ ${RET} -ne 0 ]; then
-    echo "Error building application (${RET}): ${OUT}"
+    if [ $RET -ne 0 ]; then
+        echo "Error compiling application (${RET}): ${OUT}"
+        exit 1
+    fi
+else
+    echo "Error downloading application dependencies (${RET}): ${OUT}"
     exit 1
 fi
 
