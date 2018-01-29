@@ -1,9 +1,10 @@
 #!/bin/bash
 
 if [ -z "${GTK_VERSION}" ]; then
-    export GTK_VERSION=$(pkg-config --modversion gtk+-3.0 | tr . _| cut -d '_' -f 1-2)
+    export GTK_VERSION=$(pkg-config --modversion gtk+-3.0 | tr . _ | cut -d '_' -f 1-2)
 fi
 
+export BUILD_TAG=${TRAVIS_TAG} 
 if [ -z "${BUILD_TAG}" ]; then
     # When building locally
     if [ -z "${TRAVIS_COMMIT}" ]; then
