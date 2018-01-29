@@ -73,7 +73,7 @@ func (a *ApmProxySetter) GetId() string {
 }
 
 func (a *ApmProxySetter) GetSimpleName() string {
-	return MyGettextv("APM")
+	return MyGettextv("APM (Atom Package Manager)")
 }
 
 func (a *ApmProxySetter) GetDescription() string {

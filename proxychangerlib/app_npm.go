@@ -73,7 +73,7 @@ func (a *NpmProxySetter) GetId() string {
 }
 
 func (a *NpmProxySetter) GetSimpleName() string {
-	return MyGettextv("Npm")
+	return MyGettextv("Npm (Node.js Package Manager)")
 }
 
 func (a *NpmProxySetter) GetDescription() string {
