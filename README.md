@@ -1,10 +1,11 @@
 
 # Proxy changer
 
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/okelet/Lobby)
 [![Build Status](https://travis-ci.org/okelet/proxychanger.svg?branch=master)](https://travis-ci.org/okelet/proxychanger)
 [![GitHub release](https://img.shields.io/github/release/okelet/proxychanger.svg)](https://github.com/okelet/proxychanger/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/okelet/proxychanger/total.svg)](https://github.com/okelet/proxychanger/releases)
-[![Paypal donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://paypal.me/okelet)
+[![buy me a coffee](https://img.shields.io/badge/☕-buy%20me%20a%20coffee-blue.svg)](https://paypal.me/okelet/5)
 
 Proxy changer is an application that allows you to define multiple proxies and change the settings of multiple
 applications:
