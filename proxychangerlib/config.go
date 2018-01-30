@@ -262,9 +262,9 @@ func (c *Configuration) Save(reason string) error {
 	return data.SaveToJsonFile(c.Filename)
 }
 
-func (c *Configuration) Export(filename string) error {
+func (c *Configuration) Export(filename string, includePasswords bool) error {
 	Log.Debugf("Exporting configuration to file %v...", filename)
-	data, err := c.ToMap(true)
+	data, err := c.ToMap(includePasswords)
 	if err != nil {
 		return errors.Wrap(err, "Error exporting configuration")
 	}

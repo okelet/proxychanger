@@ -72,7 +72,9 @@ func (p *Proxy) ToMap(c *Configuration, includePassword bool) (*goutils.MapHelpe
 		if err != nil {
 			return nil, err
 		}
-		h.SetString("password", password)
+		if password != "" {
+			h.SetString("password", password)
+		}
 	}
 	if p.ActivateScript != "" {
 		h.SetString("activate_script", p.ActivateScript)

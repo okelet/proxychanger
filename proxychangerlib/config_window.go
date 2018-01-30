@@ -623,7 +623,12 @@ func (w *ConfigWindow) OnWindowDeleted() bool {
 
 func (w *ConfigWindow) OnExportButtonClicked() {
 
-	// Confirm export with passwords (yes/no/cancel)
+	// Confirm export with passwords
+	includePasswords := goutils.ConfirmMessage(
+		w.Window,
+		MyGettextv("Export configuration"),
+		MyGettextv("Do you want to include passwords in the exported file?"),
+	)
 
 	chooser, err := gtk.FileChooserDialogNewWith2Buttons("Select file", w.Window, gtk.FILE_CHOOSER_ACTION_SAVE, "OK", gtk.RESPONSE_OK, "Cancel", gtk.RESPONSE_CANCEL)
 	if err != nil {
@@ -652,7 +657,7 @@ func (w *ConfigWindow) OnExportButtonClicked() {
 			if !strings.HasSuffix(strings.ToLower(filename), ".json") {
 				filename += ".json"
 			}
-			err := w.Indicator.Config.Export(filename)
+			err := w.Indicator.Config.Export(filename, includePasswords)
 			if err != nil {
 				Log.Errorf("Error exporting configuration: %v", err)
 				goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
