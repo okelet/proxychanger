@@ -51,7 +51,7 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	if !dirExists {
-		err = os.MkdirAll(mvnConfDirPath, os.ModeDir)
+		err = os.MkdirAll(mvnConfDirPath, 0755)
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", mvnConfDirPath, err)}
 		}
@@ -83,12 +83,23 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", mvnConfFilePath, err)}
 		}
+	} else {
+		doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
 	}
 
 	settings := doc.SelectElement("settings")
-	settings.RemoveChild(settings.SelectElement("proxies"))
+	if settings == nil {
+		settings = doc.CreateElement("settings")
+		settings.CreateAttr("xmlns", "http://maven.apache.org/SETTINGS/1.0.0")
+		settings.CreateAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+		settings.CreateAttr("xsi:schemaLocation", "http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd")
+	}
+	proxies := settings.SelectElement("proxies")
+	if proxies != nil {
+		settings.RemoveChild(proxies)
+	}
 	if p != nil {
-		proxies := settings.CreateElement("proxies")
+		proxies = settings.CreateElement("proxies")
 		for _, proxyType := range []string{"http", "https"} {
 			proxy := proxies.CreateElement("proxy")
 			proxy.CreateElement("id").SetText(proxyType)
