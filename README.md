@@ -10,15 +10,16 @@
 Proxy changer is an application that allows you to define multiple proxies and change the settings of multiple
 applications:
 
-* apm
-* apt
+* apt (Atom Package Manager)
+* apt/apt-get (Debian/Ubuntu)
 * .bashrc
 * Environment
 * git
 * Gnome
-* npm
+* Maven
+* npm (Node.js Package Manager)
 * subversion
-* yum/dnf
+* yum/dnf (Red Hat/CentOS/Fedora)
 * Microsoft Visual Studio Code
 * Sublime Text 3 Package Control
 
