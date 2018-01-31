@@ -45,12 +45,12 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	// Create dirs
 	mvnConfDirPath := path.Join(HOME_DIR, ".m2")
-	exists, err := goutils.DirExists(mvnConfDirPath)
+	dirExists, err := goutils.DirExists(mvnConfDirPath)
 	if err != nil {
 		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", mvnConfDirPath, err)}
 	}
 
-	if !exists {
+	if !dirExists {
 		err = os.MkdirAll(mvnConfDirPath, os.ModeDir)
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", mvnConfDirPath, err)}
@@ -58,8 +58,27 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	mvnConfFilePath := path.Join(mvnConfDirPath, "settings.xml")
+	fileExists, err := goutils.FileExists(mvnConfFilePath)
+	if err != nil {
+		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", mvnConfDirPath, err)}
+	}
+
+	if fileExists {
+		mvnBackup := mvnConfFilePath + ".proxychanger_backup"
+		mvnBackupExists, err := goutils.FileExists(mvnBackup)
+		if err != nil {
+			return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", mvnBackup, err)}
+		}
+		if !mvnBackupExists {
+			err := goutils.CopyFile(mvnConfFilePath, mvnBackup)
+			if err != nil {
+				return &AppProxyChangeResult{a, "", MyGettextv("Error backing up file %v to %v: %v", mvnConfFilePath, mvnBackup, err)}
+			}
+		}
+	}
+
 	doc := etree.NewDocument()
-	if exists {
+	if fileExists {
 		err = doc.ReadFromFile(mvnConfFilePath)
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", mvnConfFilePath, err)}
