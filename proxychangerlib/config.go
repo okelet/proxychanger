@@ -904,9 +904,11 @@ func (c *Configuration) SetLogLevel(value loggo.Level) {
 // ------------------------------------------------------------------------------------------
 
 func (c *Configuration) ListProxies(includePasswords bool) (string, *dbus.Error) {
+
 	var err error
-	Log.Debugf("Received dbus request to DbusListProxies...")
+	Log.Debugf("Received dbus request to ListProxies...")
 	response := ListProxiesResponse{}
+
 	response.Proxies = []ProxyStruct{}
 	for _, v := range c.Proxies {
 		var password string
@@ -932,23 +934,26 @@ func (c *Configuration) ListProxies(includePasswords bool) (string, *dbus.Error)
 		}
 		response.Proxies = append(response.Proxies, p)
 	}
+
 	b, err := json.Marshal(response)
 	if err != nil {
 		return "", dbus.NewError("Error marshaling", nil)
 	}
+
 	return string(b), nil
+
 }
 
 func (c *Configuration) ApplyActiveProxy() (string, *dbus.Error) {
 
-	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
+	Log.Debugf("Received dbus request to ApplyActiveProxy...")
 	response := ApplyActiveProxyResponse{}
 
 	var err error
 	if c.ActiveProxy != nil {
-		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy activated from Dbus"), false)
+		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy activated from D-Bus"), false)
 	} else {
-		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy deactivated from Dbus"), false)
+		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy deactivated from D-Bus"), false)
 	}
 	if err != nil {
 		response.Error = err.Error()
@@ -965,7 +970,7 @@ func (c *Configuration) ApplyActiveProxy() (string, *dbus.Error) {
 
 func (c *Configuration) GetActiveProxySlug() (string, *dbus.Error) {
 
-	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
+	Log.Debugf("Received dbus request to GetActiveProxySlug...")
 	response := GetActiveProxySlugResponse{}
 
 	if c.ActiveProxy != nil {
@@ -988,7 +993,7 @@ func (c *Configuration) SetActiveProxyBySlug(slug string) (string, *dbus.Error) 
 
 	proxy := c.GetProxyWithSlug(slug)
 	if slug == "none" {
-		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from Dbus"), true)
+		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from D-Bus"), true)
 		if err != nil {
 			response.Error = err.Error()
 		}
@@ -996,7 +1001,7 @@ func (c *Configuration) SetActiveProxyBySlug(slug string) (string, *dbus.Error) 
 		if proxy == nil {
 			response.Error = MyGettextv("Proxy with slug %v not found", slug)
 		} else {
-			_, err := c.SetActiveProxy(proxy, MyGettextv("Proxy activated from Dbus"), true)
+			_, err := c.SetActiveProxy(proxy, MyGettextv("Proxy activated from D-Bus"), true)
 			if err != nil {
 				response.Error = err.Error()
 			}

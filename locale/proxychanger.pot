@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-01 19:13+0100\n"
+"POT-Creation-Date: 2018-02-01 19:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,9 +226,126 @@ msgstr ""
 msgid "Script"
 msgstr ""
 
-#: proxychangerlib/app_apt.go:46
+#: proxychangerlib/app_apm.go:45 proxychangerlib/app_apt.go:33
+#: proxychangerlib/app_bashrc.go:60 proxychangerlib/app_env.go:28
+#: proxychangerlib/app_git.go:45 proxychangerlib/app_npm.go:45
 #, c-format
-msgid "Path %v is a directory, and it should be a file"
+msgid "Error generating proxy URL: %v"
+msgstr ""
+
+#: proxychangerlib/config.go:561 proxychangerlib/config.go:565
+msgid "Protocol can not be empty"
+msgstr ""
+
+#: proxychangerlib/indicator.go:418
+#, c-format
+msgid "%v: ERROR: %v"
+msgstr ""
+
+#: proxychangerlib/app_bashrc.go:134
+msgid "bashrc"
+msgstr ""
+
+#: proxychangerlib/indicator.go:488
+#, c-format
+msgid "Proxy has been deactivated%v.%v"
+msgstr ""
+
+#: proxychangerlib/app_apt.go:67
+msgid "APT"
+msgstr ""
+
+#: proxychangerlib/app_st3pc.go:40
+#, c-format
+msgid "Error getting proxy password: %v"
+msgstr ""
+
+#: proxychangerlib/app_yum_dnf.go:95
+#, c-format
+msgid "Sets the proxy in the files %v or %v for Red Hat based distributions"
+msgstr ""
+
+#: proxychangerlib/config.go:347
+msgid "Failed to get proxy URL"
+msgstr ""
+
+#: proxychangerlib/config.go:523
+#, c-format
+msgid "%v #%v"
+msgstr ""
+
+#: proxychangerlib/config.go:549
+msgid "Slug already in use"
+msgstr ""
+
+#: proxychangerlib/app_apt.go:42
+#, c-format
+msgid "Current system doesn't seem to be Debian Based (file %v doesn't exist)"
+msgstr ""
+
+#: proxychangerlib/app_bashrc.go:138
+#, c-format
+msgid "Sets the proxy in the file %v"
+msgstr ""
+
+#: proxychangerlib/check_ips.go:104
+msgid "Error starting cron"
+msgstr ""
+
+#: proxychangerlib/config.go:179
+msgid "Configuration loaded"
+msgstr ""
+
+#: proxychangerlib/config_window.go:630
+msgid "Do you want to include passwords in the exported file?"
+msgstr ""
+
+#: proxychangerlib/indicator.go:301
+msgid "Environment imported"
+msgstr ""
+
+#: proxychangerlib/app_apm.go:76
+msgid "APM (Atom Package Manager)"
+msgstr ""
+
+#: proxychangerlib/config.go:665
+#, c-format
+msgid "Proxy %v added"
+msgstr ""
+
+#: proxychangerlib/indicator.go:143
+msgid "No proxies defined"
+msgstr ""
+
+#: proxychangerlib/app_st3pc.go:94 proxychangerlib/app_st3pc.go:98
+msgid "Sublime Text 3 Package Control"
+msgstr ""
+
+#: proxychangerlib/config_window.go:717
+msgid "Warnings during import"
+msgstr ""
+
+#: proxychangerlib/indicator.go:292
+msgid "Gnome imported"
+msgstr ""
+
+#: proxychangerlib/indicator.go:406
+#, c-format
+msgid "Activate proxy script: OK (%v)"
+msgstr ""
+
+#: proxychangerlib/config.go:78
+#, c-format
+msgid "Error requesting dbus name: %v."
+msgstr ""
+
+#: proxychangerlib/indicator.go:391
+#, c-format
+msgid "Before proxy change script: WARNING (%v, %v)"
+msgstr ""
+
+#: proxychangerlib/indicator.go:423
+msgid "No proxy set yet."
 msgstr ""
 
 #: proxychangerlib/app_apt.go:40
@@ -236,13 +353,88 @@ msgstr ""
 msgid "Error detecting if the current system is Debian Based using file %v: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:535 proxychangerlib/config.go:539
-msgid "Name can not be empty"
+#: proxychangerlib/app_apt.go:71
+#, c-format
+msgid "Sets the proxy in the file %v for Debian based distributions"
 msgstr ""
 
-#: proxychangerlib/config.go:541
+#: proxychangerlib/config.go:685
 #, c-format
-msgid "Proxy with name %v already exists"
+msgid "Proxy with UUID %v not found"
+msgstr ""
+
+#: proxychangerlib/indicator.go:481
+#, c-format
+msgid ""
+"\n"
+"\n"
+"%v errors occurred."
+msgstr ""
+
+#: proxychangerlib/indicator.go:562
+msgid "New version detected"
+msgstr ""
+
+#: proxychangerlib/indicator.go:404
+#, c-format
+msgid "Activate proxy script: WARNING (%v, %v)"
+msgstr ""
+
+#: proxychangerlib/app_bashrc.go:122 proxychangerlib/app_mvn.go:126
+#: proxychangerlib/app_svn.go:123
+#, c-format
+msgid "Error writing the file %v: %v"
+msgstr ""
+
+#: proxychangerlib/app_svn.go:135 proxychangerlib/app_svn.go:139
+msgid "Subversion"
+msgstr ""
+
+#: proxychangerlib/app_yum_dnf.go:79
+#, c-format
+msgid ""
+"Error writing the file %v: %v; <a href=\"https://github.com/okelet/"
+"proxychanger/wiki/Yum\">click here</a> for possible solutions"
+msgstr ""
+
+#: proxychangerlib/config.go:521
+#, c-format
+msgid "Random name #%v"
+msgstr ""
+
+#: proxychangerlib/indicator.go:246
+msgid "Quit"
+msgstr ""
+
+#: proxychangerlib/indicator.go:358
+#, c-format
+msgid "%v %v"
+msgstr ""
+
+#: proxychangerlib/app_apm.go:80
+msgid "Atom Package Manager"
+msgstr ""
+
+#: proxychangerlib/app_msvscode.go:45 proxychangerlib/app_mvn.go:56
+#: proxychangerlib/app_st3pc.go:54 proxychangerlib/app_svn.go:69
+#, c-format
+msgid "Error creating directory %v: %v"
+msgstr ""
+
+#: proxychangerlib/indicator.go:396
+msgid "Before proxy change script: <i>not configured</i>"
+msgstr ""
+
+#: proxychangerlib/app_msvscode.go:75
+msgid "MS VS Code"
+msgstr ""
+
+#: proxychangerlib/app_npm.go:76
+msgid "Npm (Node.js Package Manager)"
+msgstr ""
+
+#: proxychangerlib/config.go:581 proxychangerlib/config.go:588
+msgid "Port must be greater than 0"
 msgstr ""
 
 #: proxychangerlib/config.go:635 proxychangerlib/config.go:640
@@ -270,18 +462,18 @@ msgstr ""
 #: proxychangerlib/config_window.go:663 proxychangerlib/config_window.go:667
 #: proxychangerlib/config_window.go:678 proxychangerlib/config_window.go:685
 #: proxychangerlib/config_window.go:723 proxychangerlib/config_window.go:737
-#: proxychangerlib/config_window.go:748 proxychangerlib/indicator.go:77
-#: proxychangerlib/indicator.go:84 proxychangerlib/indicator.go:93
-#: proxychangerlib/indicator.go:109 proxychangerlib/indicator.go:118
-#: proxychangerlib/indicator.go:127 proxychangerlib/indicator.go:144
-#: proxychangerlib/indicator.go:155 proxychangerlib/indicator.go:163
-#: proxychangerlib/indicator.go:169 proxychangerlib/indicator.go:185
-#: proxychangerlib/indicator.go:192 proxychangerlib/indicator.go:204
-#: proxychangerlib/indicator.go:210 proxychangerlib/indicator.go:219
-#: proxychangerlib/indicator.go:225 proxychangerlib/indicator.go:233
-#: proxychangerlib/indicator.go:239 proxychangerlib/indicator.go:247
-#: proxychangerlib/indicator.go:253 proxychangerlib/indicator.go:453
-#: proxychangerlib/indicator.go:460 proxychangerlib/indicator.go:537
+#: proxychangerlib/config_window.go:748 proxychangerlib/indicator.go:79
+#: proxychangerlib/indicator.go:86 proxychangerlib/indicator.go:95
+#: proxychangerlib/indicator.go:111 proxychangerlib/indicator.go:120
+#: proxychangerlib/indicator.go:129 proxychangerlib/indicator.go:146
+#: proxychangerlib/indicator.go:157 proxychangerlib/indicator.go:165
+#: proxychangerlib/indicator.go:171 proxychangerlib/indicator.go:187
+#: proxychangerlib/indicator.go:194 proxychangerlib/indicator.go:206
+#: proxychangerlib/indicator.go:212 proxychangerlib/indicator.go:221
+#: proxychangerlib/indicator.go:227 proxychangerlib/indicator.go:235
+#: proxychangerlib/indicator.go:241 proxychangerlib/indicator.go:249
+#: proxychangerlib/indicator.go:255 proxychangerlib/indicator.go:455
+#: proxychangerlib/indicator.go:462 proxychangerlib/indicator.go:541
 #: proxychangerlib/proxy_window.go:170 proxychangerlib/proxy_window.go:177
 #: proxychangerlib/proxy_window.go:184 proxychangerlib/proxy_window.go:193
 #: proxychangerlib/proxy_window.go:200 proxychangerlib/proxy_window.go:207
@@ -289,50 +481,79 @@ msgstr ""
 msgid "Please review the LOG."
 msgstr ""
 
-#: proxychangerlib/indicator.go:394
-msgid "Before proxy change script: <i>not configured</i>"
+#: proxychangerlib/app_bashrc.go:66 proxychangerlib/app_bashrc.go:71
+#: proxychangerlib/app_mvn.go:70 proxychangerlib/app_svn.go:75
+#: proxychangerlib/app_svn.go:80 proxychangerlib/app_yum_dnf.go:40
+#: proxychangerlib/app_yum_dnf.go:45
+#, c-format
+msgid "Error checking if file %v exists: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:448
-#, c-format
-msgid "Proxy %v activated"
+#: proxychangerlib/app_gnome.go:41
+msgid "Sets the proxy in the Gnome Desktop environment"
 msgstr ""
 
-#: proxychangerlib/app_st3pc.go:40
+#: proxychangerlib/config_window.go:701
 #, c-format
-msgid "Error getting proxy password: %v"
+msgid "Error importing configuration: %v."
 msgstr ""
 
 #: proxychangerlib/constants.go:87
 msgid "Application already running"
 msgstr ""
 
-#: proxychangerlib/app_msvscode.go:45 proxychangerlib/app_mvn.go:56
-#: proxychangerlib/app_st3pc.go:54 proxychangerlib/app_svn.go:69
-#, c-format
-msgid "Error creating directory %v: %v"
+#: proxychangerlib/indicator.go:176
+msgid "Status"
 msgstr ""
 
-#: proxychangerlib/app_bashrc.go:138
-#, c-format
-msgid "Sets the proxy in the file %v"
+#: proxychangerlib/indicator.go:218
+msgid "Show LOG"
 msgstr ""
 
-#: proxychangerlib/app_npm.go:76
-msgid "Npm (Node.js Package Manager)"
+#: proxychangerlib/indicator.go:344
+msgid "Error starting update check thread"
+msgstr ""
+
+#: proxychangerlib/app_bashrc.go:104 proxychangerlib/app_msvscode.go:52
+#: proxychangerlib/app_mvn.go:84 proxychangerlib/app_st3pc.go:61
+#: proxychangerlib/app_svn.go:92 proxychangerlib/app_yum_dnf.go:56
+#, c-format
+msgid "Error reading file %v: %v"
+msgstr ""
+
+#: proxychangerlib/app_git.go:76 proxychangerlib/app_git.go:80
+msgid "Git"
+msgstr ""
+
+#: proxychangerlib/app_msvscode.go:28 proxychangerlib/app_mvn.go:39
+#: proxychangerlib/app_st3pc.go:28
+#, c-format
+msgid "Error checking if command %v exists: %v"
+msgstr ""
+
+#: proxychangerlib/config.go:777 proxychangerlib/config.go:809
+#, c-format
+msgid "File %v doesn't exist"
+msgstr ""
+
+#: proxychangerlib/config.go:547
+msgid "Slug can not be empty"
+msgstr ""
+
+#: proxychangerlib/config.go:954 proxychangerlib/config.go:1004
+msgid "Proxy activated from D-Bus"
 msgstr ""
 
 #: proxychangerlib/config_window.go:217
 msgid "Error filling information; please, check the LOG."
 msgstr ""
 
-#: proxychangerlib/indicator.go:484
-msgid "Proxy activated"
-msgstr ""
-
-#: proxychangerlib/indicator.go:486
+#: proxychangerlib/config_window.go:314 proxychangerlib/config_window.go:329
+#: proxychangerlib/config_window.go:344 proxychangerlib/config_window.go:353
+#: proxychangerlib/config_window.go:362 proxychangerlib/config_window.go:614
+#: proxychangerlib/config_window.go:707
 #, c-format
-msgid "Proxy has been deactivated%v.%v"
+msgid "Error saving configuration: %v."
 msgstr ""
 
 #: proxychangerlib/app_apm.go:36 proxychangerlib/app_git.go:36
@@ -343,32 +564,75 @@ msgstr ""
 msgid "Command %v not found"
 msgstr ""
 
-#: proxychangerlib/app_apt.go:71
+#: proxychangerlib/app_bashrc.go:76 proxychangerlib/app_mvn.go:75
+#: proxychangerlib/app_svn.go:85
 #, c-format
-msgid "Sets the proxy in the file %v for Debian based distributions"
+msgid "Error backing up file %v to %v: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:549
-msgid "Slug already in use"
+#: proxychangerlib/config.go:448
+#, c-format
+msgid "Proxy %v activated"
 msgstr ""
 
-#: proxychangerlib/indicator.go:55
-msgid "Error creating configuration window"
+#: proxychangerlib/config.go:697
+msgid "Error deleting password in keyring"
 msgstr ""
 
-#: proxychangerlib/app_apm.go:80
-msgid "Atom Package Manager"
+#: proxychangerlib/indicator.go:486
+msgid "Proxy activated"
 msgstr ""
 
-#: proxychangerlib/app_npm.go:80
-msgid "Node.js Package Manager"
+#: proxychangerlib/app_apt.go:57
+#, c-format
+msgid ""
+"Error writing the file %v: %v; <a href=\"https://github.com/okelet/"
+"proxychanger/wiki/APT\">click here</a> for possible solutions"
 msgstr ""
 
-#: proxychangerlib/config.go:561 proxychangerlib/config.go:565
-msgid "Protocol can not be empty"
+#: proxychangerlib/app_mvn.go:33 proxychangerlib/app_svn.go:57
+#: proxychangerlib/app_yum_dnf.go:33
+#, c-format
+msgid "Error getting the proxy password: %v"
 msgstr ""
 
-#: proxychangerlib/indicator.go:574
+#: proxychangerlib/app_yum_dnf.go:91
+msgid "Yum/Dnf"
+msgstr ""
+
+#: proxychangerlib/indicator.go:563
+#, c-format
+msgid "Version %v has been released."
+msgstr ""
+
+#: proxychangerlib/app_gnome.go:37
+msgid "Gnome"
+msgstr ""
+
+#: proxychangerlib/config.go:584 proxychangerlib/config.go:591
+msgid "Port must be lower than 65535"
+msgstr ""
+
+#: proxychangerlib/config.go:674
+#, c-format
+msgid "Proxy %v updated"
+msgstr ""
+
+#: proxychangerlib/config_window.go:629
+msgid "Export configuration"
+msgstr ""
+
+#: proxychangerlib/indicator.go:179 proxychangerlib/indicator.go:181
+#, c-format
+msgid "%v Status"
+msgstr ""
+
+#: proxychangerlib/indicator.go:389
+#, c-format
+msgid "Before proxy change script: ERROR (%v)"
+msgstr ""
+
+#: proxychangerlib/indicator.go:578
 #, c-format
 msgid "Error starting IP check thread: %v"
 msgstr ""
@@ -383,31 +647,62 @@ msgstr ""
 msgid "Error getting widget %v"
 msgstr ""
 
-#: proxychangerlib/app_apt.go:42
+#: proxychangerlib/app_env.go:50 proxychangerlib/app_env.go:53
+#: proxychangerlib/app_env.go:60 proxychangerlib/app_env.go:63
 #, c-format
-msgid "Current system doesn't seem to be Debian Based (file %v doesn't exist)"
+msgid "Error unsetting environment variable %v: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:78
+#: proxychangerlib/app_env.go:75
+msgid "Environment"
+msgstr ""
+
+#: proxychangerlib/app_msvscode.go:63 proxychangerlib/app_st3pc.go:82
 #, c-format
-msgid "Error requesting dbus name: %v."
+msgid "Error saving file %v: %v"
 msgstr ""
 
-#: proxychangerlib/app_git.go:76 proxychangerlib/app_git.go:80
-msgid "Git"
+#: proxychangerlib/app_npm.go:80
+msgid "Node.js Package Manager"
 msgstr ""
 
-#: proxychangerlib/app_yum_dnf.go:91
-msgid "Yum/Dnf"
+#: proxychangerlib/config.go:535 proxychangerlib/config.go:539
+msgid "Name can not be empty"
 msgstr ""
 
-#: proxychangerlib/app_yum_dnf.go:95
+#: proxychangerlib/indicator.go:57
+msgid "Error creating configuration window"
+msgstr ""
+
+#: proxychangerlib/config.go:866
+msgid "No proxy found for current IPs"
+msgstr ""
+
+#: proxychangerlib/config_window.go:704
+msgid "Configuration imported"
+msgstr ""
+
+#: proxychangerlib/indicator.go:416
 #, c-format
-msgid "Sets the proxy in the files %v or %v for Red Hat based distributions"
+msgid "%v: OK"
 msgstr ""
 
-#: proxychangerlib/config.go:450 proxychangerlib/indicator.go:486
-msgid "Proxy deactivated"
+#: proxychangerlib/config.go:555
+#, c-format
+msgid "Proxy with slug %v already exists"
+msgstr ""
+
+#: proxychangerlib/indicator.go:306
+msgid "Initial indicator configuration and proxy import"
+msgstr ""
+
+#: proxychangerlib/indicator.go:333
+msgid "Error starting IP check thread"
+msgstr ""
+
+#: proxychangerlib/config.go:1002
+#, c-format
+msgid "Proxy with slug %v not found"
 msgstr ""
 
 #: proxychangerlib/app_env.go:35 proxychangerlib/app_env.go:38
@@ -416,55 +711,19 @@ msgstr ""
 msgid "Error setting environment variable %v: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:339
-msgid "Failed to get proxy password"
-msgstr ""
-
-#: proxychangerlib/app_gnome.go:41
-msgid "Sets the proxy in the Gnome Desktop environment"
-msgstr ""
-
-#: proxychangerlib/app_mvn.go:33 proxychangerlib/app_svn.go:57
-#: proxychangerlib/app_yum_dnf.go:33
+#: proxychangerlib/app_gnome.go:27
 #, c-format
-msgid "Error getting the proxy password: %v"
+msgid "Error setting the Gnome settings: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:951 proxychangerlib/config.go:991
-msgid "Proxy deactivated from Dbus"
+#: proxychangerlib/indicator.go:83 proxychangerlib/indicator.go:366
+#: proxychangerlib/indicator.go:373
+msgid "No proxy"
 msgstr ""
 
-#: proxychangerlib/indicator.go:389
+#: proxychangerlib/indicator.go:414
 #, c-format
-msgid "Before proxy change script: WARNING (%v, %v)"
-msgstr ""
-
-#: proxychangerlib/indicator.go:421
-msgid "No proxy set yet."
-msgstr ""
-
-#: proxychangerlib/app_apm.go:32 proxychangerlib/app_bashrc.go:51
-#: proxychangerlib/app_git.go:32 proxychangerlib/app_npm.go:32
-#: proxychangerlib/app_svn.go:45
-#, c-format
-msgid "Error initializing function: %v"
-msgstr ""
-
-#: proxychangerlib/config.go:513
-msgid "Random name"
-msgstr ""
-
-#: proxychangerlib/config.go:693
-#, c-format
-msgid "The proxy %v is currently in use"
-msgstr ""
-
-#: proxychangerlib/config_window.go:704
-msgid "Configuration imported"
-msgstr ""
-
-#: proxychangerlib/app_env.go:79
-msgid "Sets the proxy in the current environment"
+msgid "%v: Skipped (%v)"
 msgstr ""
 
 #: proxychangerlib/proxy_window.go:54
@@ -472,194 +731,8 @@ msgstr ""
 msgid "Edit proxy %v"
 msgstr ""
 
-#: proxychangerlib/app_bashrc.go:83
-#, c-format
-msgid "Error opening file %v: %v"
-msgstr ""
-
-#: proxychangerlib/config_window.go:701
-#, c-format
-msgid "Error importing configuration: %v."
-msgstr ""
-
-#: proxychangerlib/check_ips.go:104
-msgid "Error starting cron"
-msgstr ""
-
-#: proxychangerlib/config.go:685
-#, c-format
-msgid "Proxy with UUID %v not found"
-msgstr ""
-
-#: proxychangerlib/config.go:997
-#, c-format
-msgid "Proxy with slug %v not found"
-msgstr ""
-
-#: proxychangerlib/indicator.go:474
-#, c-format
-msgid " (%v)"
-msgstr ""
-
-#: proxychangerlib/proxy_window.go:39
-#, c-format
-msgid "Error loading asset %v"
-msgstr ""
-
-#: proxychangerlib/app_bashrc.go:66 proxychangerlib/app_bashrc.go:71
-#: proxychangerlib/app_mvn.go:70 proxychangerlib/app_svn.go:75
-#: proxychangerlib/app_svn.go:80 proxychangerlib/app_yum_dnf.go:40
-#: proxychangerlib/app_yum_dnf.go:45
-#, c-format
-msgid "Error checking if file %v exists: %v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:331
-msgid "Error starting IP check thread"
-msgstr ""
-
 #: proxychangerlib/proxy_window.go:56
 msgid "Add proxy"
-msgstr ""
-
-#: proxychangerlib/indicator.go:299
-msgid "Environment imported"
-msgstr ""
-
-#: proxychangerlib/app_apm.go:76
-msgid "APM (Atom Package Manager)"
-msgstr ""
-
-#: proxychangerlib/app_yum_dnf.go:48
-#, c-format
-msgid ""
-"Current system doesn't seem to have Yum/Dnf (none of %v and %v files exist)"
-msgstr ""
-
-#: proxychangerlib/app_yum_dnf.go:79
-#, c-format
-msgid ""
-"Error writing the file %v: %v; <a href=\"https://github.com/okelet/"
-"proxychanger/wiki/Yum\">click here</a> for possible solutions"
-msgstr ""
-
-#: proxychangerlib/indicator.go:591
-#, c-format
-msgid "Error staring update check thread: %v"
-msgstr ""
-
-#: proxychangerlib/app_apm.go:65 proxychangerlib/app_git.go:65
-#: proxychangerlib/app_npm.go:65
-#, c-format
-msgid "Error running command %v (%v): %v/%v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:304
-msgid "Initial indicator configuration and proxy import"
-msgstr ""
-
-#: proxychangerlib/indicator.go:484
-#, c-format
-msgid "Proxy %v has been activated%v.%v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:558
-msgid "New version detected"
-msgstr ""
-
-#: proxychangerlib/config.go:179
-msgid "Configuration loaded"
-msgstr ""
-
-#: proxychangerlib/indicator.go:141
-msgid "No proxies defined"
-msgstr ""
-
-#: proxychangerlib/indicator.go:412
-#, c-format
-msgid "%v: Skipped (%v)"
-msgstr ""
-
-#: proxychangerlib/config.go:711
-#, c-format
-msgid "Proxy %v deleted"
-msgstr ""
-
-#: proxychangerlib/app_svn.go:135 proxychangerlib/app_svn.go:139
-msgid "Subversion"
-msgstr ""
-
-#: proxychangerlib/indicator.go:201
-#, c-format
-msgid "New version %v released, click to update"
-msgstr ""
-
-#: proxychangerlib/app_apt.go:67
-msgid "APT"
-msgstr ""
-
-#: proxychangerlib/config.go:697
-msgid "Error deleting password in keyring"
-msgstr ""
-
-#: proxychangerlib/indicator.go:362
-#, c-format
-msgid "%v No proxy"
-msgstr ""
-
-#: proxychangerlib/indicator.go:479
-#, c-format
-msgid ""
-"\n"
-"\n"
-"%v errors occurred."
-msgstr ""
-
-#: proxychangerlib/app_env.go:75
-msgid "Environment"
-msgstr ""
-
-#: proxychangerlib/app_msvscode.go:79
-msgid "Microsoft Visual Studio Code"
-msgstr ""
-
-#: proxychangerlib/app_st3pc.go:94 proxychangerlib/app_st3pc.go:98
-msgid "Sublime Text 3 Package Control"
-msgstr ""
-
-#: proxychangerlib/config.go:347
-msgid "Failed to get proxy URL"
-msgstr ""
-
-#: proxychangerlib/config.go:584 proxychangerlib/config.go:591
-msgid "Port must be lower than 65535"
-msgstr ""
-
-#: proxychangerlib/config_window.go:630
-msgid "Do you want to include passwords in the exported file?"
-msgstr ""
-
-#: proxychangerlib/indicator.go:177 proxychangerlib/indicator.go:179
-#, c-format
-msgid "%v Status"
-msgstr ""
-
-#: proxychangerlib/indicator.go:416
-#, c-format
-msgid "%v: ERROR: %v"
-msgstr ""
-
-#: proxychangerlib/app_apm.go:45 proxychangerlib/app_apt.go:33
-#: proxychangerlib/app_bashrc.go:60 proxychangerlib/app_env.go:28
-#: proxychangerlib/app_git.go:45 proxychangerlib/app_npm.go:45
-#, c-format
-msgid "Error generating proxy URL: %v"
-msgstr ""
-
-#: proxychangerlib/app_msvscode.go:28 proxychangerlib/app_mvn.go:39
-#: proxychangerlib/app_st3pc.go:28
-#, c-format
-msgid "Error checking if command %v exists: %v"
 msgstr ""
 
 #: proxychangerlib/app_msvscode.go:39 proxychangerlib/app_mvn.go:50
@@ -669,45 +742,117 @@ msgstr ""
 msgid "Error checking if directory %v exists: %v"
 msgstr ""
 
-#: proxychangerlib/app_msvscode.go:63 proxychangerlib/app_st3pc.go:82
+#: proxychangerlib/config.go:450 proxychangerlib/indicator.go:488
+msgid "Proxy deactivated"
+msgstr ""
+
+#: proxychangerlib/app_apm.go:65 proxychangerlib/app_git.go:65
+#: proxychangerlib/app_npm.go:65
 #, c-format
-msgid "Error saving file %v: %v"
+msgid "Error running command %v (%v): %v/%v"
 msgstr ""
 
-#: proxychangerlib/config.go:949 proxychangerlib/config.go:999
-msgid "Proxy activated from Dbus"
+#: proxychangerlib/app_apt.go:46
+#, c-format
+msgid "Path %v is a directory, and it should be a file"
 msgstr ""
 
-#: proxychangerlib/indicator.go:174
-msgid "Status"
+#: proxychangerlib/app_yum_dnf.go:48
+#, c-format
+msgid ""
+"Current system doesn't seem to have Yum/Dnf (none of %v and %v files exist)"
 msgstr ""
 
-#: proxychangerlib/indicator.go:216
-msgid "Show LOG"
+#: proxychangerlib/config.go:541
+#, c-format
+msgid "Proxy with name %v already exists"
 msgstr ""
 
-#: proxychangerlib/indicator.go:400
+#: proxychangerlib/config.go:956 proxychangerlib/config.go:996
+msgid "Proxy deactivated from D-Bus"
+msgstr ""
+
+#: proxychangerlib/indicator.go:393
+#, c-format
+msgid "Before proxy change script: OK (%v)"
+msgstr ""
+
+#: proxychangerlib/config.go:571 proxychangerlib/config.go:575
+msgid "Address can not be empty"
+msgstr ""
+
+#: proxychangerlib/config.go:711
+#, c-format
+msgid "Proxy %v deleted"
+msgstr ""
+
+#: proxychangerlib/indicator.go:203
+#, c-format
+msgid "New version %v released, click to update"
+msgstr ""
+
+#: proxychangerlib/indicator.go:409
+msgid "Activate proxy script: <i>not configured</i>"
+msgstr ""
+
+#: proxychangerlib/indicator.go:595
+#, c-format
+msgid "Error staring update check thread: %v"
+msgstr ""
+
+#: proxychangerlib/app_mvn.go:138 proxychangerlib/app_mvn.go:142
+msgid "Maven"
+msgstr ""
+
+#: proxychangerlib/config.go:858
+msgid "Proxy activated according to current IPs"
+msgstr ""
+
+#: proxychangerlib/indicator.go:232
+msgid "Help"
+msgstr ""
+
+#: proxychangerlib/indicator.go:402
 #, c-format
 msgid "Activate proxy script: ERROR (%v)"
 msgstr ""
 
-#: proxychangerlib/app_env.go:50 proxychangerlib/app_env.go:53
-#: proxychangerlib/app_env.go:60 proxychangerlib/app_env.go:63
+#: proxychangerlib/indicator.go:476
 #, c-format
-msgid "Error unsetting environment variable %v: %v"
+msgid " (%v)"
 msgstr ""
 
-#: proxychangerlib/app_gnome.go:27
+#: proxychangerlib/app_bashrc.go:83
 #, c-format
-msgid "Error setting the Gnome settings: %v"
+msgid "Error opening file %v: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:547
-msgid "Slug can not be empty"
+#: proxychangerlib/app_msvscode.go:79
+msgid "Microsoft Visual Studio Code"
 msgstr ""
 
-#: proxychangerlib/config.go:581 proxychangerlib/config.go:588
-msgid "Port must be greater than 0"
+#: proxychangerlib/config.go:513
+msgid "Random name"
+msgstr ""
+
+#: proxychangerlib/proxy_window.go:39
+#, c-format
+msgid "Error loading asset %v"
+msgstr ""
+
+#: proxychangerlib/app_apm.go:32 proxychangerlib/app_bashrc.go:51
+#: proxychangerlib/app_git.go:32 proxychangerlib/app_npm.go:32
+#: proxychangerlib/app_svn.go:45
+#, c-format
+msgid "Error initializing function: %v"
+msgstr ""
+
+#: proxychangerlib/app_env.go:79
+msgid "Sets the proxy in the current environment"
+msgstr ""
+
+#: proxychangerlib/config.go:339
+msgid "Failed to get proxy password"
 msgstr ""
 
 #: proxychangerlib/config.go:599
@@ -715,162 +860,17 @@ msgstr ""
 msgid "The element %v in the list of IPs (%v) is not valid: %v"
 msgstr ""
 
-#: proxychangerlib/config.go:665
+#: proxychangerlib/config.go:693
 #, c-format
-msgid "Proxy %v added"
+msgid "The proxy %v is currently in use"
 msgstr ""
 
-#: proxychangerlib/config.go:674
+#: proxychangerlib/indicator.go:364
 #, c-format
-msgid "Proxy %v updated"
+msgid "%v No proxy"
 msgstr ""
 
-#: proxychangerlib/app_bashrc.go:134
-msgid "bashrc"
-msgstr ""
-
-#: proxychangerlib/indicator.go:559
+#: proxychangerlib/indicator.go:486
 #, c-format
-msgid "Version %v has been released."
-msgstr ""
-
-#: proxychangerlib/indicator.go:244
-msgid "Quit"
-msgstr ""
-
-#: proxychangerlib/app_bashrc.go:122 proxychangerlib/app_mvn.go:126
-#: proxychangerlib/app_svn.go:123
-#, c-format
-msgid "Error writing the file %v: %v"
-msgstr ""
-
-#: proxychangerlib/app_gnome.go:37
-msgid "Gnome"
-msgstr ""
-
-#: proxychangerlib/config.go:555
-#, c-format
-msgid "Proxy with slug %v already exists"
-msgstr ""
-
-#: proxychangerlib/config.go:777 proxychangerlib/config.go:809
-#, c-format
-msgid "File %v doesn't exist"
-msgstr ""
-
-#: proxychangerlib/indicator.go:356
-#, c-format
-msgid "%v %v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:402
-#, c-format
-msgid "Activate proxy script: WARNING (%v, %v)"
-msgstr ""
-
-#: proxychangerlib/app_apt.go:57
-#, c-format
-msgid ""
-"Error writing the file %v: %v; <a href=\"https://github.com/okelet/"
-"proxychanger/wiki/APT\">click here</a> for possible solutions"
-msgstr ""
-
-#: proxychangerlib/config.go:523
-#, c-format
-msgid "%v #%v"
-msgstr ""
-
-#: proxychangerlib/config_window.go:629
-msgid "Export configuration"
-msgstr ""
-
-#: proxychangerlib/indicator.go:81 proxychangerlib/indicator.go:364
-#: proxychangerlib/indicator.go:371
-msgid "No proxy"
-msgstr ""
-
-#: proxychangerlib/indicator.go:342
-msgid "Error starting update check thread"
-msgstr ""
-
-#: proxychangerlib/app_mvn.go:138 proxychangerlib/app_mvn.go:142
-msgid "Maven"
-msgstr ""
-
-#: proxychangerlib/config_window.go:314 proxychangerlib/config_window.go:329
-#: proxychangerlib/config_window.go:344 proxychangerlib/config_window.go:353
-#: proxychangerlib/config_window.go:362 proxychangerlib/config_window.go:614
-#: proxychangerlib/config_window.go:707
-#, c-format
-msgid "Error saving configuration: %v."
-msgstr ""
-
-#: proxychangerlib/config_window.go:717
-msgid "Warnings during import"
-msgstr ""
-
-#: proxychangerlib/indicator.go:404
-#, c-format
-msgid "Activate proxy script: OK (%v)"
-msgstr ""
-
-#: proxychangerlib/app_msvscode.go:75
-msgid "MS VS Code"
-msgstr ""
-
-#: proxychangerlib/config.go:571 proxychangerlib/config.go:575
-msgid "Address can not be empty"
-msgstr ""
-
-#: proxychangerlib/config.go:858
-msgid "Proxy activated according to current IPs"
-msgstr ""
-
-#: proxychangerlib/app_bashrc.go:104 proxychangerlib/app_msvscode.go:52
-#: proxychangerlib/app_mvn.go:84 proxychangerlib/app_st3pc.go:61
-#: proxychangerlib/app_svn.go:92 proxychangerlib/app_yum_dnf.go:56
-#, c-format
-msgid "Error reading file %v: %v"
-msgstr ""
-
-#: proxychangerlib/config.go:521
-#, c-format
-msgid "Random name #%v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:230
-msgid "Help"
-msgstr ""
-
-#: proxychangerlib/indicator.go:391
-#, c-format
-msgid "Before proxy change script: OK (%v)"
-msgstr ""
-
-#: proxychangerlib/indicator.go:407
-msgid "Activate proxy script: <i>not configured</i>"
-msgstr ""
-
-#: proxychangerlib/indicator.go:414
-#, c-format
-msgid "%v: OK"
-msgstr ""
-
-#: proxychangerlib/app_bashrc.go:76 proxychangerlib/app_mvn.go:75
-#: proxychangerlib/app_svn.go:85
-#, c-format
-msgid "Error backing up file %v to %v: %v"
-msgstr ""
-
-#: proxychangerlib/indicator.go:290
-msgid "Gnome imported"
-msgstr ""
-
-#: proxychangerlib/indicator.go:387
-#, c-format
-msgid "Before proxy change script: ERROR (%v)"
-msgstr ""
-
-#: proxychangerlib/config.go:866
-msgid "No proxy found for current IPs"
+msgid "Proxy %v has been activated%v.%v"
 msgstr ""
