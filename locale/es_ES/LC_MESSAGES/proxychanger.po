@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-18 11:12+0100\n"
-"PO-Revision-Date: 2018-01-18 11:15+0100\n"
+"PO-Revision-Date: 2018-01-30 15:02+0100\n"
 "Last-Translator: Juan A. S. <okelet@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
@@ -239,7 +239,7 @@ msgstr "Importado de Gnome"
 #: proxychangerlib/indicator.go:433
 #, c-format
 msgid " (%v)"
-msgstr "(%v)"
+msgstr " (%v)"
 
 #: proxychangerlib/app_msvscode.go:45 proxychangerlib/app_st3pc.go:54
 #: proxychangerlib/app_svn.go:69
