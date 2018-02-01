@@ -9,6 +9,8 @@
 REPO_BASE=https://github.com/okelet/proxychanger
 APP_PATH=${HOME}/.local/bin/proxychanger
 
+######################################################################
+
 IS_DEBIAN=0
 IS_REDHAT=0
 if [ -f /etc/debian_version ]; then
