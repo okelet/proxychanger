@@ -33,6 +33,8 @@ type Indicator struct {
 
 	NoProxyRadioItem       *gtk.RadioMenuItem
 	NoProxyRadioItemHandle glib.SignalHandle
+
+	NotificationId uint32
 }
 
 func NewIndicator(sessionBus *dbus.Conn, config *Configuration, currentVersion string, cmdLogLevelSet bool, testMode bool) (*Indicator, error) {
@@ -526,11 +528,13 @@ func (i *Indicator) OnShowProxyNameNextToIndicatorChanged(newValue bool) {
 }
 
 func (i *Indicator) ShowNotification(title string, text string) {
-	_, err := notify.SendNotification(i.SessionBus, notify.Notification{
+	var err error
+	i.NotificationId, err = notify.SendNotification(i.SessionBus, notify.Notification{
 		AppIcon:       ICON_NAME,
 		Summary:       title,
 		Body:          text,
 		ExpireTimeout: int32(5000),
+		ReplacesID:    i.NotificationId,
 	})
 	if err != nil {
 		Log.Errorf("Error showing notification: %v.", err)
