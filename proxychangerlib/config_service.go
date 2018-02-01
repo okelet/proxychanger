@@ -4,11 +4,21 @@ import (
 	"github.com/godbus/dbus"
 )
 
-type DbusListProxiesResponse struct {
+type ListProxiesResponse struct {
+	Error   string
 	Proxies []ProxyStruct
 }
 
-type DbusSetActiveProxyBySlugResponse struct {
+type GetActiveProxySlugResponse struct {
+	Error string
+	Slug  string
+}
+
+type SetActiveProxyBySlugResponse struct {
+	Error string
+}
+
+type ApplyActiveProxyResponse struct {
 	Error string
 }
 
@@ -27,7 +37,9 @@ type ProxyStruct struct {
 	Active      bool
 }
 
-type ConfigInterface interface {
-	DbusListProxies() (string, *dbus.Error)
+type ConfigService interface {
+	ListProxies(includePasswords bool) (string, *dbus.Error)
+	ApplyActiveProxy() (string, *dbus.Error)
+	GetActiveProxySlug() (string, *dbus.Error)
 	SetActiveProxyBySlug(slug string) (string, *dbus.Error)
 }

@@ -52,9 +52,21 @@ func main() {
 	indicatorCommand.Default()
 
 	listCommand := app.Command("list", proxychangerlib.MyGettextv("List proxies"))
+	// TODO: output format
+	includePasswords := listCommand.Flag("include-passwords", proxychangerlib.MyGettextv("Include passwords")).Bool()
+
+	applyActiveCommand := app.Command("apply", proxychangerlib.MyGettextv("Apply current current active proxy"))
+
+	getActiveCommand := app.Command("get", proxychangerlib.MyGettextv("Get current active proxy slug; returns empty if no active proxy"))
 
 	setActiveCommand := app.Command("set", proxychangerlib.MyGettextv("Set active proxy"))
 	setActiveCommandSlug := setActiveCommand.Arg("slug", proxychangerlib.MyGettextv("New active proxy slug; use 'none' to unset the proxy")).Required().String()
+
+	// TODO: add command
+
+	// TODO: edit command
+
+	// TODO: delete command
 
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
@@ -68,12 +80,9 @@ func main() {
 		}
 		proxychangerlib.Log.SetLogLevel(level)
 		cmdLogLevelSet = true
-	} else {
-		// TODO: Change log level according to config
-		// proxychangerlib.Log.SetLogLevel(level)
 	}
 
-	if logErrorOutput != nil && *logErrorOutput {
+	if *logErrorOutput {
 		proxychangerlib.AddErrorOutputLogging()
 	}
 
@@ -81,34 +90,37 @@ func main() {
 	case indicatorCommand.FullCommand():
 		os.Exit(runIndicator(sessionBus, *configFile, cmdLogLevelSet, *testMode))
 	case listCommand.FullCommand():
-		listProxies(sessionBus)
+		listProxies(sessionBus, *configFile, cmdLogLevelSet, *includePasswords)
+	case applyActiveCommand.FullCommand():
+		applyActiveProxyBySlug(sessionBus, *configFile, cmdLogLevelSet)
+	case getActiveCommand.FullCommand():
+		getActiveProxyBySlug(sessionBus, *configFile, cmdLogLevelSet)
 	case setActiveCommand.FullCommand():
-		setActiveProxyBySlug(sessionBus, *setActiveCommandSlug)
+		setActiveProxyBySlug(sessionBus, *setActiveCommandSlug, *configFile, cmdLogLevelSet)
 	}
 
 }
 
 func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool, testMode bool) int {
 
-	reply, err := sessionBus.RequestName(proxychangerlib.DBUS_INTERFACE, dbus.NameFlagDoNotQueue)
-	if err != nil {
-		fmt.Println(proxychangerlib.MyGettextv("Error requesting dbus name: %v.", err))
-		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error requesting dbus name: %v.", err.Error()))
-		return 1
-	}
-
-	if reply != dbus.RequestNameReplyPrimaryOwner {
-		fmt.Println(proxychangerlib.MyGettextv("Program already running."))
-		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Program already running."))
-		return 1
-	}
-
-	config, warnings, err := proxychangerlib.NewConfig(sessionBus, configFile, false)
+	config, warnings, err := proxychangerlib.NewConfig(configFile, false)
 	if err != nil {
 		fmt.Println(proxychangerlib.MyGettextv("Error loading configuration: %v.", err))
 		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error loading configuration: %v.", err))
 		return 1
 	}
+
+	err = config.Lock(sessionBus)
+	if err == proxychangerlib.ApplicationAlreadyRunningError {
+		fmt.Println(proxychangerlib.MyGettextv("Application already running."))
+		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Application already running."))
+		return 1
+	} else if err != nil {
+		fmt.Println(proxychangerlib.MyGettextv("Error locking configuration: %v.", err))
+		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error locking configuration: %v.", err))
+		return 1
+	}
+
 	if len(warnings) > 0 {
 		// TODO Log
 	}
@@ -136,70 +148,182 @@ func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool,
 
 }
 
-func getConfigConnection(dbusConnection *dbus.Conn) (proxychangerlib.ConfigInterface, error) {
-	return proxychangerlib.NewDbusConfig(dbusConnection)
+func getConfigService(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) (proxychangerlib.ConfigService, []string, error) {
+
+	// Get the current list of names to check if already running
+	var names []string
+	err := dbusConnection.BusObject().Call("org.freedesktop.DBus.ListNames", 0).Store(&names)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if goutils.ListContainsString(names, proxychangerlib.DBUS_INTERFACE) {
+		// Already running, connect using dbus
+		return proxychangerlib.NewConfigDbus(dbusConnection)
+	} else {
+
+		// Not running, create a new configuration and lock it
+		config, warnings, err := proxychangerlib.NewConfig(configFile, false)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		err = config.Lock(dbusConnection)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if !cmdLogLevelSet {
+			proxychangerlib.Log.SetLogLevel(config.LogLevel)
+		}
+
+		return config, warnings, nil
+
+	}
+
 }
 
-func listProxies(dbusConnection *dbus.Conn) int {
+func listProxies(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool, includePasswords bool) int {
 
-	c, err := getConfigConnection(dbusConnection)
+	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
 	if err != nil {
 		fmt.Println("Error", err)
 		return 1
 	}
 
-	responseData, err := c.DbusListProxies()
-
-	var response proxychangerlib.DbusListProxiesResponse
-	err = json.Unmarshal([]byte(responseData), &response)
-	if err != nil {
-		panic(err)
+	if len(warnings) > 0 {
+		// TODO
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
-		proxychangerlib.MyGettextv("Active"),
-		proxychangerlib.MyGettextv("Slug"),
-		proxychangerlib.MyGettextv("Name"),
-		proxychangerlib.MyGettextv("Protocol"),
-		proxychangerlib.MyGettextv("Address"),
-		proxychangerlib.MyGettextv("Username"),
-	})
+	responseData, err := c.ListProxies(includePasswords)
 
-	for _, v := range response.Proxies {
-		table.Append([]string{
-			map[bool]string{true: proxychangerlib.MyGettextv("Yes"), false: proxychangerlib.MyGettextv("No")}[v.Active],
-			v.Slug,
-			v.Name,
-			v.Protocol,
-			v.Address,
-			v.Username,
-		})
-	}
-	table.Render() // Send output
-
-	return 0
-
-}
-
-func setActiveProxyBySlug(dbusConnection *dbus.Conn, slug string) int {
-
-	c, err := getConfigConnection(dbusConnection)
-	if err != nil {
-		fmt.Println("Error", err)
-		return 1
-	}
-
-	responseData, err := c.SetActiveProxyBySlug(slug)
-
-	var response proxychangerlib.DbusSetActiveProxyBySlugResponse
+	var response proxychangerlib.ListProxiesResponse
 	err = json.Unmarshal([]byte(responseData), &response)
 	if err != nil {
 		panic(err)
 	}
 
 	if response.Error != "" {
-		proxychangerlib.MyGettextv("Error setting active proxy: %v", response.Error)
+		fmt.Println(proxychangerlib.MyGettextv("Error listing proxies: %v.", response.Error))
+		return 1
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	header := []string{
+		proxychangerlib.MyGettextv("Active"),
+		proxychangerlib.MyGettextv("Slug"),
+		proxychangerlib.MyGettextv("Name"),
+		proxychangerlib.MyGettextv("Protocol"),
+		proxychangerlib.MyGettextv("Address"),
+		proxychangerlib.MyGettextv("Username"),
+	}
+	if includePasswords {
+		header = append(header, proxychangerlib.MyGettextv("Password"))
+	}
+	table.SetHeader(header)
+
+	for _, v := range response.Proxies {
+		row := []string{
+			map[bool]string{true: proxychangerlib.MyGettextv("Yes"), false: proxychangerlib.MyGettextv("No")}[v.Active],
+			v.Slug,
+			v.Name,
+			v.Protocol,
+			v.Address,
+			v.Username,
+		}
+		if includePasswords {
+			row = append(row, v.Password)
+		}
+		table.Append(row)
+	}
+	table.Render()
+
+	return 0
+
+}
+
+func applyActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) int {
+
+	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	if err != nil {
+		fmt.Println("Error", err)
+		return 1
+	}
+
+	if len(warnings) > 0 {
+		// TODO
+	}
+
+	responseData, err := c.ApplyActiveProxy()
+
+	var response proxychangerlib.ApplyActiveProxyResponse
+	err = json.Unmarshal([]byte(responseData), &response)
+	if err != nil {
+		panic(err)
+	}
+
+	if response.Error != "" {
+		fmt.Println(proxychangerlib.MyGettextv("Error applying active proxy: %v.", response.Error))
+		return 1
+	}
+
+	return 0
+
+}
+
+func getActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) int {
+
+	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	if err != nil {
+		fmt.Println("Error", err)
+		return 1
+	}
+
+	if len(warnings) > 0 {
+		// TODO
+	}
+
+	responseData, err := c.GetActiveProxySlug()
+
+	var response proxychangerlib.GetActiveProxySlugResponse
+	err = json.Unmarshal([]byte(responseData), &response)
+	if err != nil {
+		panic(err)
+	}
+
+	if response.Error != "" {
+		fmt.Println(proxychangerlib.MyGettextv("Error setting active proxy: %v.", response.Error))
+		return 1
+	} else {
+		fmt.Println(response.Slug)
+	}
+
+	return 0
+
+}
+
+func setActiveProxyBySlug(dbusConnection *dbus.Conn, slug string, configFile string, cmdLogLevelSet bool) int {
+
+	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	if err != nil {
+		fmt.Println("Error", err)
+		return 1
+	}
+
+	if len(warnings) > 0 {
+		// TODO
+	}
+
+	responseData, err := c.SetActiveProxyBySlug(slug)
+
+	var response proxychangerlib.SetActiveProxyBySlugResponse
+	err = json.Unmarshal([]byte(responseData), &response)
+	if err != nil {
+		panic(err)
+	}
+
+	if response.Error != "" {
+		fmt.Println(proxychangerlib.MyGettextv("Error setting active proxy: %v.", response.Error))
 		return 1
 	}
 

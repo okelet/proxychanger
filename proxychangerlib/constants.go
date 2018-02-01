@@ -13,6 +13,8 @@ import (
 	"github.com/juju/loggo"
 )
 
+var ApplicationAlreadyRunningError error
+
 const DBUS_PATH = "/com/github/okelet/proxychanger"
 const DBUS_INTERFACE = "com.github.okelet.proxychanger"
 
@@ -80,6 +82,9 @@ func InitConstants() error {
 	loggo.ReplaceDefaultWriter(loggo.NewSimpleWriter(fileRotateWriter, func(entry loggo.Entry) string {
 		return TzLoggoFormatter(entry)
 	}))
+
+	// Errors
+	ApplicationAlreadyRunningError = errors.New(MyGettextv("Application already running"))
 
 	return nil
 

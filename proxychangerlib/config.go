@@ -50,7 +50,7 @@ type Configuration struct {
 	LastExecutionResults *GlobalProxyChangeResult
 }
 
-func NewConfig(sessionBus *dbus.Conn, configPath string, setActiveProxy bool) (*Configuration, []string, error) {
+func NewConfig(configPath string, setActiveProxy bool) (*Configuration, []string, error) {
 
 	config := &Configuration{}
 	config.Listeners = []ConfigListener{}
@@ -67,12 +67,27 @@ func NewConfig(sessionBus *dbus.Conn, configPath string, setActiveProxy bool) (*
 
 	config.Filename = configPath
 
-	err = sessionBus.Export(config, DBUS_PATH, DBUS_INTERFACE)
+	return config, warnings, nil
+
+}
+
+func (c *Configuration) Lock(sessionBus *dbus.Conn) error {
+
+	reply, err := sessionBus.RequestName(DBUS_INTERFACE, dbus.NameFlagDoNotQueue)
 	if err != nil {
-		return nil, []string{}, errors.Wrap(err, "Error exporting to dbus")
+		return errors.Wrap(err, MyGettextv("Error requesting dbus name: %v.", err))
 	}
 
-	return config, warnings, nil
+	if reply != dbus.RequestNameReplyPrimaryOwner {
+		return ApplicationAlreadyRunningError
+	}
+
+	err = sessionBus.Export(c, DBUS_PATH, DBUS_INTERFACE)
+	if err != nil {
+		errors.Wrap(err, "Error exporting to dbus")
+	}
+
+	return nil
 
 }
 
@@ -700,10 +715,6 @@ func (c *Configuration) DeleteProxy(p *Proxy, save bool) error {
 
 }
 
-func (c *Configuration) ListProxies() ([]*Proxy, error) {
-	return c.Proxies, nil
-}
-
 func (c *Configuration) GetEnabledApplications() []ProxifiedApplication {
 	apps := []ProxifiedApplication{}
 	for _, app := range ProxifiedApplications {
@@ -824,59 +835,6 @@ func (c *Configuration) SetProxyPassword(p *goutils.Proxy, password string) erro
 	return c.SetPassword(p.UUID, password)
 }
 
-func (c *Configuration) DbusListProxies() (string, *dbus.Error) {
-	Log.Debugf("Received dbus request to DbusListProxies...")
-	response := DbusListProxiesResponse{}
-	response.Proxies = []ProxyStruct{}
-	for _, v := range c.Proxies {
-		p := ProxyStruct{
-			UUID:        v.UUID,
-			Name:        v.Name,
-			Slug:        v.Slug,
-			Protocol:    v.Protocol,
-			Address:     v.Address,
-			Port:        v.Port,
-			Username:    v.Username,
-			Exceptions:  v.Exceptions,
-			MatchingIps: v.MatchingIps,
-			Active:      c.ActiveProxy == v,
-		}
-		response.Proxies = append(response.Proxies, p)
-	}
-	b, err := json.Marshal(response)
-	if err != nil {
-		return "", dbus.NewError("Error marshaling", nil)
-	}
-	return string(b), nil
-}
-
-func (c *Configuration) SetActiveProxyBySlug(slug string) (string, *dbus.Error) {
-	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
-	response := DbusSetActiveProxyBySlugResponse{}
-	proxy := c.GetProxyWithSlug(slug)
-	if slug == "none" {
-		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from dbus"), true)
-		if err != nil {
-			response.Error = err.Error()
-		}
-	} else {
-		if proxy == nil {
-			response.Error = MyGettextv("Proxy with slug %v not found", slug)
-		} else {
-			_, err := c.SetActiveProxy(proxy, MyGettextv("Proxy activated from dbus"), true)
-			if err != nil {
-				response.Error = err.Error()
-			}
-		}
-	}
-	b, err := json.Marshal(response)
-	if err != nil {
-		return "", dbus.NewError("Error marshaling", nil)
-	}
-	return string(b), nil
-
-}
-
 func (c *Configuration) SetProxyForIps(ips []string) {
 
 	Log.Debugf("Received new ips %v.", ips)
@@ -939,4 +897,118 @@ func (c *Configuration) SetLogLevel(value loggo.Level) {
 	for _, l := range c.Listeners {
 		l.OnLogLevelChanged(value)
 	}
+}
+
+// ------------------------------------------------------------------------------------------
+// Dbus Methods
+// ------------------------------------------------------------------------------------------
+
+func (c *Configuration) ListProxies(includePasswords bool) (string, *dbus.Error) {
+	var err error
+	Log.Debugf("Received dbus request to DbusListProxies...")
+	response := ListProxiesResponse{}
+	response.Proxies = []ProxyStruct{}
+	for _, v := range c.Proxies {
+		var password string
+		if includePasswords {
+			password, err = v.GetPassword()
+			if err != nil {
+				response.Error = err.Error()
+				break
+			}
+		}
+		p := ProxyStruct{
+			UUID:        v.UUID,
+			Name:        v.Name,
+			Slug:        v.Slug,
+			Protocol:    v.Protocol,
+			Address:     v.Address,
+			Port:        v.Port,
+			Username:    v.Username,
+			Password:    password,
+			Exceptions:  v.Exceptions,
+			MatchingIps: v.MatchingIps,
+			Active:      c.ActiveProxy == v,
+		}
+		response.Proxies = append(response.Proxies, p)
+	}
+	b, err := json.Marshal(response)
+	if err != nil {
+		return "", dbus.NewError("Error marshaling", nil)
+	}
+	return string(b), nil
+}
+
+
+func (c *Configuration) ApplyActiveProxy() (string, *dbus.Error) {
+
+	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
+	response := ApplyActiveProxyResponse{}
+
+	var err error
+	if c.ActiveProxy != nil {
+		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy activated from Dbus"), false)
+	} else {
+		_, err = c.SetActiveProxy(c.ActiveProxy, MyGettextv("Proxy deactivated from Dbus"), false)
+	}
+	if err != nil {
+		response.Error = err.Error()
+	}
+
+	b, err := json.Marshal(response)
+	if err != nil {
+		return "", dbus.NewError("Error marshaling", nil)
+	}
+
+	return string(b), nil
+
+}
+
+func (c *Configuration) GetActiveProxySlug() (string, *dbus.Error) {
+
+	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
+	response := GetActiveProxySlugResponse{}
+
+	if c.ActiveProxy != nil {
+		response.Slug = c.ActiveProxy.Slug
+	}
+
+	b, err := json.Marshal(response)
+	if err != nil {
+		return "", dbus.NewError("Error marshaling", nil)
+	}
+
+	return string(b), nil
+
+}
+
+func (c *Configuration) SetActiveProxyBySlug(slug string) (string, *dbus.Error) {
+
+	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
+	response := SetActiveProxyBySlugResponse{}
+
+	proxy := c.GetProxyWithSlug(slug)
+	if slug == "none" {
+		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from dbus"), true)
+		if err != nil {
+			response.Error = err.Error()
+		}
+	} else {
+		if proxy == nil {
+			response.Error = MyGettextv("Proxy with slug %v not found", slug)
+		} else {
+			_, err := c.SetActiveProxy(proxy, MyGettextv("Proxy activated from Dbus"), true)
+			if err != nil {
+				response.Error = err.Error()
+			}
+		}
+	}
+
+	b, err := json.Marshal(response)
+	if err != nil {
+		return "", dbus.NewError("Error marshaling", nil)
+	}
+
+	return string(b), nil
+
 }
