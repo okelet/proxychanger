@@ -939,7 +939,6 @@ func (c *Configuration) ListProxies(includePasswords bool) (string, *dbus.Error)
 	return string(b), nil
 }
 
-
 func (c *Configuration) ApplyActiveProxy() (string, *dbus.Error) {
 
 	Log.Debugf("Received dbus request to SetActiveProxyBySlug...")
@@ -989,7 +988,7 @@ func (c *Configuration) SetActiveProxyBySlug(slug string) (string, *dbus.Error) 
 
 	proxy := c.GetProxyWithSlug(slug)
 	if slug == "none" {
-		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from dbus"), true)
+		_, err := c.SetActiveProxy(nil, MyGettextv("Proxy deactivated from Dbus"), true)
 		if err != nil {
 			response.Error = err.Error()
 		}
