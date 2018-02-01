@@ -42,31 +42,31 @@
     <data>
       <row>
         <col id="0">UNSPECIFIED</col>
-        <col id="1" translatable="yes">UNSPECIFIED</col>
+        <col id="1" translatable="yes">All</col>
       </row>
       <row>
         <col id="0">TRACE</col>
-        <col id="1" translatable="yes">TRACE</col>
+        <col id="1" translatable="yes">Trace</col>
       </row>
       <row>
         <col id="0">DEBUG</col>
-        <col id="1" translatable="yes">DEBUG</col>
+        <col id="1" translatable="yes">Debug</col>
       </row>
       <row>
         <col id="0">INFO</col>
-        <col id="1" translatable="yes">INFO</col>
+        <col id="1" translatable="yes">Info</col>
       </row>
       <row>
         <col id="0">WARNING</col>
-        <col id="1" translatable="yes">WARNING</col>
+        <col id="1" translatable="yes">Warning</col>
       </row>
       <row>
         <col id="0">ERROR</col>
-        <col id="1" translatable="yes">ERROR</col>
+        <col id="1" translatable="yes">Error</col>
       </row>
       <row>
         <col id="0">CRITICAL</col>
-        <col id="1" translatable="yes">CRITICAL</col>
+        <col id="1" translatable="yes">Critical</col>
       </row>
     </data>
   </object>
@@ -186,7 +186,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">end</property>
-                            <property name="label" translatable="yes">Start indicator with system</property>
+                            <property name="label" translatable="yes">Start indicator with session</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -403,7 +403,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                                    <property name="title" translatable="yes">column</property>
+                                    <property name="title" translatable="yes">Proxy name</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext3"/>
                                       <attributes>
