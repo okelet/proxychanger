@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-18 11:12+0100\n"
+"POT-Creation-Date: 2018-02-01 19:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,148 +26,164 @@ msgid "Deactivate proxy"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:45
-msgid "UNSPECIFIED"
+msgid "All"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:49
-msgid "TRACE"
+msgid "Trace"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:53
-msgid "DEBUG"
+msgid "Debug"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:57
-msgid "INFO"
+msgid "Info"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:61
-msgid "WARNING"
+msgid "Warning"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:65
-msgid "ERROR"
+msgid "Error"
 msgstr ""
 
 #: proxychangerlib/assets/config.glade:69
-msgid "CRITICAL"
+msgid "Critical"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:83
+#: proxychangerlib/assets/config.glade:89
 msgid "Configuration"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:124
+#: proxychangerlib/assets/config.glade:130
 msgid ""
 "A custom log level has been set from the command line. The log level set "
 "here will have no effect."
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:183
-msgid "Start indicator with system"
+#: proxychangerlib/assets/config.glade:189
+msgid "Start indicator with session"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:207
+#: proxychangerlib/assets/config.glade:213
 msgid "Show current proxy name next to icon"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:231
+#: proxychangerlib/assets/config.glade:237
 msgid "LOG level"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:243
+#: proxychangerlib/assets/config.glade:249
 msgid "Auto change proxy based on computer IPs"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:267
+#: proxychangerlib/assets/config.glade:273
 msgid "What to do if no match"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:331
+#: proxychangerlib/assets/config.glade:337
 msgid "Check for updates"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:345
-#: proxychangerlib/assets/config.glade:502
-#: proxychangerlib/assets/proxy.glade:368
-#: proxychangerlib/assets/proxy.glade:384
+#: proxychangerlib/assets/config.glade:351
+#: proxychangerlib/assets/config.glade:508
+#: proxychangerlib/assets/proxy.glade:371
+#: proxychangerlib/assets/proxy.glade:387
 msgid "General"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:400
-msgid "column"
+#: proxychangerlib/assets/config.glade:406
+msgid "Proxy name"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:486
+#: proxychangerlib/assets/config.glade:492
 msgid "Proxies"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:551
+#: proxychangerlib/assets/config.glade:557
 msgid "Enabled?"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:567
+#: proxychangerlib/assets/config.glade:573
 msgid "Application name"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:588
+#: proxychangerlib/assets/config.glade:594
 msgid "Enabled/Disabled applications"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:607
+#: proxychangerlib/assets/config.glade:613
 msgid "Applications"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:639
+#: proxychangerlib/assets/config.glade:666
+msgid ""
+"Before proxy change script (<a href=\"https://github.com/okelet/proxychanger/"
+"wiki/Scripts\">help</a>)"
+msgstr ""
+
+#: proxychangerlib/assets/config.glade:719
+msgid ""
+"On deactivate proxy script (<a href=\"https://github.com/okelet/proxychanger/"
+"wiki/Scripts\">help</a>)"
+msgstr ""
+
+#: proxychangerlib/assets/config.glade:739
+msgid "Scripts"
+msgstr ""
+
+#: proxychangerlib/assets/config.glade:771
 msgid "Export"
 msgstr ""
 
-#: proxychangerlib/assets/config.glade:654
+#: proxychangerlib/assets/config.glade:786
 msgid "Import"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:104
+#: proxychangerlib/assets/proxy.glade:107
 msgid "Short name"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:116
+#: proxychangerlib/assets/proxy.glade:119
 msgid "Short name, leave empty to autogenerate"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:130
-#: proxychangerlib/assets/proxy.glade:142
+#: proxychangerlib/assets/proxy.glade:133
+#: proxychangerlib/assets/proxy.glade:145
 msgid "Name"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:156
+#: proxychangerlib/assets/proxy.glade:159
 msgid "Address"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:169
+#: proxychangerlib/assets/proxy.glade:172
 msgid "Port"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:182
+#: proxychangerlib/assets/proxy.glade:185
 msgid "Username"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:195
+#: proxychangerlib/assets/proxy.glade:198
 msgid "Password"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:208
+#: proxychangerlib/assets/proxy.glade:211
 msgid "Exceptions"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:220
+#: proxychangerlib/assets/proxy.glade:223
 msgid "IP or hostname"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:233
+#: proxychangerlib/assets/proxy.glade:236
 msgid "Username, if any"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:264
+#: proxychangerlib/assets/proxy.glade:267
 msgid ""
 "List of exceptions, one per line; for example:\n"
 "\n"
@@ -177,12 +193,12 @@ msgid ""
 "*.example.com"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:289
-#: proxychangerlib/assets/proxy.glade:306
+#: proxychangerlib/assets/proxy.glade:292
+#: proxychangerlib/assets/proxy.glade:309
 msgid "Matching IPs"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:300
+#: proxychangerlib/assets/proxy.glade:303
 msgid ""
 "List of matching IPs, separated by commas. If any IP in the computer matches "
 "any IP listed here, this proxy will become active.\n"
@@ -192,10 +208,20 @@ msgid ""
 "192.168.1.0/24"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:325
+#: proxychangerlib/assets/proxy.glade:328
 msgid "Password, if any"
 msgstr ""
 
-#: proxychangerlib/assets/proxy.glade:339
+#: proxychangerlib/assets/proxy.glade:342
 msgid "Show/hide password"
+msgstr ""
+
+#: proxychangerlib/assets/proxy.glade:432
+msgid ""
+"On proxy activate script (<a href=\"https://github.com/okelet/proxychanger/"
+"wiki/Scripts\">help</a>)"
+msgstr ""
+
+#: proxychangerlib/assets/proxy.glade:445
+msgid "Script"
 msgstr ""
