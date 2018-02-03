@@ -45,9 +45,9 @@ func main() {
 	app.VersionFlag.Short('v')
 	logLevel := app.Flag("log-level", proxychangerlib.MyGettextv("Log level")).Short('l').String()
 	logErrorOutput := app.Flag("error-output", proxychangerlib.MyGettextv("Log to error output")).Bool()
+	configFile := app.Flag("config", proxychangerlib.MyGettextv("Configuration file")).Short('c').ExistingFile()
 
 	indicatorCommand := app.Command("indicator", proxychangerlib.MyGettextv("Start as an indicator"))
-	configFile := indicatorCommand.Flag("config", proxychangerlib.MyGettextv("Configuration file")).Short('c').ExistingFile()
 	testMode := indicatorCommand.Flag("test", proxychangerlib.MyGettextv("Test mode")).Short('t').Bool()
 	indicatorCommand.Default()
 
