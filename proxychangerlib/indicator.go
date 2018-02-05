@@ -386,27 +386,27 @@ func (i *Indicator) ShowLastExecutionResults() {
 		changeScriptResult := i.Config.LastExecutionResults.ChangeScriptResult
 		if changeScriptResult != nil {
 			if changeScriptResult.Error != nil {
-				lines = append(lines, MyGettextv("Before proxy change script: ERROR (%v)", changeScriptResult.Error))
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Before proxy change script", changeScriptResult.Error))
 			} else if changeScriptResult.Code != 0 {
-				lines = append(lines, MyGettextv("Before proxy change script: WARNING (%v, %v)", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: WARNING (%v)", "Before proxy change script", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
 			} else {
-				lines = append(lines, MyGettextv("Before proxy change script: OK (%v)", changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: OK (%v)", "Before proxy change script", changeScriptResult.GetCombinedOutput()))
 			}
 		} else {
-			lines = append(lines, MyGettextv("Before proxy change script: <i>not configured</i>"))
+			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Before proxy change script", MyGettextv("not configured")))
 		}
 
 		activateScriptResult := i.Config.LastExecutionResults.ActivateScriptResult
 		if activateScriptResult != nil {
 			if activateScriptResult.Error != nil {
-				lines = append(lines, MyGettextv("Activate proxy script: ERROR (%v)", activateScriptResult.Error))
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Activate proxy script", changeScriptResult.Error))
 			} else if changeScriptResult.Code != 0 {
-				lines = append(lines, MyGettextv("Activate proxy script: WARNING (%v, %v)", activateScriptResult.Code, activateScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: WARNING (%v)", "Activate proxy script", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
 			} else {
-				lines = append(lines, MyGettextv("Activate proxy script: OK (%v)", activateScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: OK (%v)", "Activate proxy script", changeScriptResult.GetCombinedOutput()))
 			}
 		} else {
-			lines = append(lines, MyGettextv("Activate proxy script: <i>not configured</i>"))
+			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Activate proxy script", MyGettextv("not configured")))
 		}
 
 		for _, r := range i.Config.LastExecutionResults.Results {
@@ -415,7 +415,7 @@ func (i *Indicator) ShowLastExecutionResults() {
 			} else if r.Success() {
 				lines = append(lines, MyGettextv("%v: OK", r.Application.GetSimpleName()))
 			} else {
-				lines = append(lines, MyGettextv("%v: ERROR: %v", r.Application.GetSimpleName(), r.ErrorMessage))
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", r.Application.GetSimpleName(), r.ErrorMessage))
 			}
 		}
 
@@ -471,21 +471,27 @@ func (i *Indicator) OnProxyActivatedInternal(n *GlobalProxyChangeResult) {
 		item.HandlerUnblock(handle)
 	}
 
-	reason := ""
-	if n.Reason != "" {
-		reason = MyGettextv(" (%v)", n.Reason)
-	}
-
-	errorsMessage := ""
-	if n.GetNumberOfErrors() > 0 {
-		errorsMessage = MyGettextv("\n\n%v errors occurred.", n.GetNumberOfErrors())
-	}
-
 	// Show notification
 	if n.Proxy != nil {
-		i.ShowNotification(MyGettextv("Proxy activated"), MyGettextv("Proxy %v has been activated%v.%v", n.Proxy.Name, reason, errorsMessage))
+		if n.Reason != "" && n.GetNumberOfErrors() > 0 {
+			i.ShowNotification(MyGettextv("Proxy activated"), MyGettextv("Proxy %v has been activated (%v).\n\n\n%v errors occurred.", n.Proxy.Name, goutils.EnsureFirstSentenceLetterLowercase(n.Reason), n.GetNumberOfErrors()))
+		} else if n.Reason != "" {
+			i.ShowNotification(MyGettextv("Proxy activated"), MyGettextv("Proxy %v has been activated (%v).", n.Proxy.Name, goutils.EnsureFirstSentenceLetterLowercase(n.Reason)))
+		} else if n.GetNumberOfErrors() > 0 {
+			i.ShowNotification(MyGettextv("Proxy activated"), MyGettextv("Proxy %v has been activated.\n\n\n%v errors occurred.", n.Proxy.Name, n.GetNumberOfErrors()))
+		} else {
+			i.ShowNotification(MyGettextv("Proxy activated"), MyGettextv("Proxy %v has been activated.", n.Proxy.Name))
+		}
 	} else {
-		i.ShowNotification(MyGettextv("Proxy deactivated"), MyGettextv("Proxy has been deactivated%v.%v", reason, errorsMessage))
+		if n.Reason != "" && n.GetNumberOfErrors() > 0 {
+			i.ShowNotification(MyGettextv("Proxy deactivated"), MyGettextv("Proxy has been deactivated (%v).\n\n\n%v errors occurred.", goutils.EnsureFirstSentenceLetterLowercase(n.Reason), n.GetNumberOfErrors()))
+		} else if n.Reason != "" {
+			i.ShowNotification(MyGettextv("Proxy deactivated"), MyGettextv("Proxy has been deactivated (%v).", goutils.EnsureFirstSentenceLetterLowercase(n.Reason)))
+		} else if n.GetNumberOfErrors() > 0 {
+			i.ShowNotification(MyGettextv("Proxy deactivated"), MyGettextv("Proxy has been deactivated.\n\n\n%v errors occurred.", n.GetNumberOfErrors()))
+		} else {
+			i.ShowNotification(MyGettextv("Proxy deactivated"), MyGettextv("Proxy has been deactivated."))
+		}
 	}
 
 	// Rebuild menu
