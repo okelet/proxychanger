@@ -103,14 +103,14 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 
 	helper, err := goutils.NewMapHelperFromJsonFile(configPath, failIfNotFound)
 	if err != nil {
-		return warnings, errors.Wrapf(err, "Error loading configuration")
+		return warnings, errors.Wrapf(err, MyGettextv("Error loading configuration"))
 	}
 
 	// Deactivate current proxy, if any
 	if c.ActiveProxy != nil {
 		_, err := c.SetActiveProxy(nil, "Deactivating current proxy while loading configuration", false)
 		if err != nil {
-			return warnings, errors.Wrap(err, "Error deactivating proxy")
+			return warnings, errors.Wrap(err, MyGettextv("Error deactivating proxy"))
 		}
 	}
 
@@ -119,7 +119,7 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 	for ind, _ := range proxiesCopy {
 		err := c.DeleteProxy(proxiesCopy[ind], false)
 		if err != nil {
-			return []string{}, errors.Wrapf(err, "Error deleting proxy %v", proxiesCopy[ind].Name)
+			return []string{}, errors.Wrapf(err, MyGettextv("Error deleting proxy %v"), proxiesCopy[ind].Name)
 		}
 	}
 
