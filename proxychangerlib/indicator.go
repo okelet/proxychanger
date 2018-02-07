@@ -10,7 +10,8 @@ import (
 	"github.com/godbus/dbus"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/okelet/appindicator"
+	appindicator "github.com/jamesadney/appindicator"
+	appindicatorgtk3 "github.com/jamesadney/appindicator/gtk-extensions/gotk3"
 	"github.com/okelet/goutils"
 	"github.com/okelet/goutils/updatechecker"
 	"github.com/pkg/errors"
@@ -28,7 +29,7 @@ type Indicator struct {
 	CheckIpsThread *CheckIpsThread
 
 	SessionBus   *dbus.Conn
-	AppIndicator *appindicator.AppIndicatorGotk3
+	AppIndicator *appindicatorgtk3.AppIndicatorGotk3
 	ConfigWindow *ConfigWindow
 
 	NoProxyRadioItem       *gtk.RadioMenuItem
@@ -49,7 +50,7 @@ func NewIndicator(sessionBus *dbus.Conn, config *Configuration, currentVersion s
 	i.CmdLogLevelSet = cmdLogLevelSet
 
 	i.SessionBus = sessionBus
-	i.AppIndicator = appindicator.NewGtkAppIndicator(APP_ID, ICON_NAME, appindicator.CategoryApplicationStatus)
+	i.AppIndicator = appindicatorgtk3.NewAppIndicator(APP_ID, ICON_NAME, appindicator.CategoryApplicationStatus)
 	i.AppIndicator.SetStatus(appindicator.StatusActive)
 
 	i.ConfigWindow, err = NewConfigWindow(&i)
