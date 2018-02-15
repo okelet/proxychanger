@@ -17,7 +17,7 @@ if [ -f /etc/debian_version ]; then
     IS_DEBIAN=1
     DEPENDENCIES=(jq libappindicator3-1 curl)
     echo "Debian based system detected."
-elif [ -f /etc/redhat-release ]; then
+elif [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
     IS_REDHAT=1
     DEPENDENCIES=(jq libappindicator-gtk3 curl)
     echo "Red Hat based system detected."

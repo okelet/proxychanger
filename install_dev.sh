@@ -16,7 +16,7 @@ if [ -f /etc/debian_version ]; then
     IS_DEBIAN=1
     DEPENDENCIES=(libgtk-3-dev libappindicator3-1 libappindicator3-dev git)
     echo "Debian based system detected."
-elif [ -f /etc/redhat-release ]; then
+elif [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
     IS_REDHAT=1
     DEPENDENCIES=(gtk3-devel libappindicator-gtk3 libappindicator-gtk3-devel git)
     echo "Red Hat based system detected."
