@@ -61,9 +61,9 @@ func NewIndicator(sessionBus *dbus.Conn, config *Configuration, currentVersion s
 	i.CheckIpsThread = NewCheckIpsThread(i.Config.TimeBetweenIpChecks, i.Config)
 
 	if i.TestMode {
-		i.CheckUpdatesThread = updatechecker.NewCheckUpdatesThread(30, "okelet", "proxychanger", "master")
+		i.CheckUpdatesThread = updatechecker.NewCheckUpdatesThread(30, "okelet", "proxychanger", "master", true)
 	} else {
-		i.CheckUpdatesThread = updatechecker.NewCheckUpdatesThread(i.Config.TimeBetweenUpdateChecks, "okelet", "proxychanger", i.CurrentVersion)
+		i.CheckUpdatesThread = updatechecker.NewCheckUpdatesThread(i.Config.TimeBetweenUpdateChecks, "okelet", "proxychanger", i.CurrentVersion, true)
 	}
 
 	return &i, nil
