@@ -42,68 +42,25 @@ function check_dependency() {
             return 0
         else
             return 1
+        fi
     fi
+}
+
+if [[ "${IGNORE_DEPS}" != "1" ]]; then
+    for i in "${DEPENDENCIES[@]}" ; do
+        if ! check_dependency ${i} ${IS_DEBIAN} ${IS_REDHAT} ; then
+            echo "Missing dependency ${i}."
+            echo "Please install it using the command below and re-run this script."
+            if [[ ${IS_DEBIAN} -eq 1 ]]; then
+                echo "sudo apt-get install ${i}"
+            elif [[ ${IS_REDHAT} -eq 1 ]] ; then
+                echo "sudo yum install ${i}"
+            fi
+            exit 1
+        fi
+    done
 fi
-}
 
-function check_and_install_dependency() {
-    local PKG=$1
-    local IS_DEB=$2
-    local IS_RH=$3
-    local REPO=$4
-    if ! check_dependency ${PKG} ${IS_DEB} ${IS_RH} ; then
-        while true; do 
-            read -p "${PKG} is not installed; do you want to install it? " -u 3 yn
-            case $yn in
-                [Yy]* )
-                    if [ -n "${REPO}" ]; then
-                        if [[ ${IS_DEB} -eq 1 ]]; then
-                            sudo add-apt-repository --update --yes ${REPO}
-                            RET=$?
-                            if [ $RET -ne 0 ]; then
-                                return 1
-                            fi
-                        elif [[ ${IS_RH} -eq 1 ]]; then
-                            sudo yum-config-manager --add-repo ${REPO}
-                            RET=$?
-                            if [ $RET -ne 0 ]; then
-                                return 1
-                            fi
-                        else
-                            return 1
-                        fi
-                    fi
-                    if [ ${IS_DEB} -eq 1 ]; then
-                        sudo apt-get install ${PKG}
-                    elif [ ${IS_RH} -eq 1 ]; then
-                        sudo yum install ${PKG}
-                    else
-                        return 1
-                    fi
-                    break
-                    ;;
-                [Nn]* )
-                    return 1
-                    ;;
-                * ) echo "Please answer yes or no.";;
-            esac
-        done
-    fi
-    check_dependency ${PKG} ${IS_DEB} ${IS_RH} || return 1
-    return 0
-}
-
-
-for i in "${DEPENDENCIES[@]}" ; do
-    exec 3<>/dev/tty
-    check_and_install_dependency ${i} ${IS_DEBIAN} ${IS_REDHAT}
-    RET=$?
-    exec 3>&-
-    if [ ${RET} -ne 0 ]; then
-        echo "Failed to detect or install dependency ${i}."
-        exit 1
-    fi
-done
 
 ######################################################################
 
