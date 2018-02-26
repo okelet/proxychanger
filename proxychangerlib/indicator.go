@@ -389,9 +389,14 @@ func (i *Indicator) ShowLastExecutionResults() {
 			if changeScriptResult.Error != nil {
 				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Before proxy change script", changeScriptResult.Error))
 			} else if changeScriptResult.Code != 0 {
-				lines = append(lines, MyGettextv("%v: WARNING (%v)", "Before proxy change script", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Before proxy change script", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
 			} else {
-				lines = append(lines, MyGettextv("%v: OK (%v)", "Before proxy change script", changeScriptResult.GetCombinedOutput()))
+				combinedOutput := changeScriptResult.GetCombinedOutput()
+				if combinedOutput != "" {
+					lines = append(lines, MyGettextv("%v: OK (%v)", "Before proxy change script", combinedOutput))
+				} else {
+					lines = append(lines, MyGettextv("%v: OK", "Before proxy change script"))
+				}
 			}
 		} else {
 			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Before proxy change script", MyGettextv("not configured")))
@@ -400,11 +405,16 @@ func (i *Indicator) ShowLastExecutionResults() {
 		activateScriptResult := i.Config.LastExecutionResults.ActivateScriptResult
 		if activateScriptResult != nil {
 			if activateScriptResult.Error != nil {
-				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Activate proxy script", changeScriptResult.Error))
-			} else if changeScriptResult.Code != 0 {
-				lines = append(lines, MyGettextv("%v: WARNING (%v)", "Activate proxy script", changeScriptResult.Code, changeScriptResult.GetCombinedOutput()))
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Activate proxy script", activateScriptResult.Error))
+			} else if activateScriptResult.Code != 0 {
+				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Activate proxy script", activateScriptResult.Code, activateScriptResult.GetCombinedOutput()))
 			} else {
-				lines = append(lines, MyGettextv("%v: OK (%v)", "Activate proxy script", changeScriptResult.GetCombinedOutput()))
+				combinedOutput := activateScriptResult.GetCombinedOutput()
+				if combinedOutput != "" {
+					lines = append(lines, MyGettextv("%v: OK (%v)", "Activate proxy script", combinedOutput))
+				} else {
+					lines = append(lines, MyGettextv("%v: OK", "Activate proxy script"))
+				}
 			}
 		} else {
 			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Activate proxy script", MyGettextv("not configured")))
