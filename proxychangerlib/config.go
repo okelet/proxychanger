@@ -39,6 +39,7 @@ type Configuration struct {
 
 	ProxyChangeScript     string
 	ProxyDeactivateScript string
+	ProxyActivateScript   string
 
 	DisabledApplicationsIds []string
 
@@ -149,6 +150,7 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 
 	c.ProxyChangeScript = helper.GetString("proxy_change_script", "")
 	c.ProxyDeactivateScript = helper.GetString("proxy_deactivate_script", "")
+	c.ProxyActivateScript = helper.GetString("proxy_activate_script", "")
 
 	c.ExcludedInterfacesRegexps = helper.GetListOfStrings("excluded_interfaces_regexps", DEFAULT_EXCLUDED_INTERFACES_REGEXPS)
 	c.ExcludedInterfacesRegexpsParsed = []*regexp.Regexp{}
@@ -229,6 +231,9 @@ func (c *Configuration) ToMap(includePasswords bool) (*goutils.MapHelper, error)
 	}
 	if c.ProxyDeactivateScript != "" {
 		h.SetString("proxy_deactivate_script", c.ProxyDeactivateScript)
+	}
+	if c.ProxyActivateScript != "" {
+		h.SetString("proxy_activate_script", c.ProxyActivateScript)
 	}
 
 	if !goutils.StringListsAreEqual(c.ExcludedInterfacesRegexps, DEFAULT_EXCLUDED_INTERFACES_REGEXPS) {
@@ -385,11 +390,19 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 	}
 	c.ActiveProxy = p
 
-	var activateScriptResult *ScritpResult
+	n := &GlobalProxyChangeResult{
+		Proxy:              p,
+		Reason:             reason,
+		Results:            results,
+		ChangeScriptResult: changeScriptResult,
+	}
+
 	if p != nil {
+
 		if p.ActivateScript != "" {
 			env := map[string]string{
 				"PC_ACTION":                "activate",
+				"PC_PROXY_NAME":            p.Name,
 				"PC_HTTP_PROXY_SIMPLE_URL": p.ToSimpleUrl(),
 				"PC_HTTP_PROXY_FULL_URL":   proxyUrl,
 				"PC_HTTP_PROXY_HOST":       p.Address,
@@ -399,7 +412,7 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 				"PC_HTTP_PROXY_EXCEPTIONS": strings.Join(p.Exceptions, ","),
 			}
 			err, pid, exitCode, stdOut, stdErr := goutils.RunCommandAndWait("", strings.NewReader(p.ActivateScript), "bash", []string{}, env)
-			activateScriptResult = &ScritpResult{
+			n.ProxyActivateScriptResult = &ScritpResult{
 				Error:  err,
 				Pid:    pid,
 				Code:   exitCode,
@@ -407,7 +420,31 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 				Stderr: stdErr,
 			}
 		}
+
+		if c.ProxyActivateScript != "" {
+			env := map[string]string{
+				"PC_ACTION":                "activate",
+				"PC_PROXY_NAME":            p.Name,
+				"PC_HTTP_PROXY_SIMPLE_URL": p.ToSimpleUrl(),
+				"PC_HTTP_PROXY_FULL_URL":   proxyUrl,
+				"PC_HTTP_PROXY_HOST":       p.Address,
+				"PC_HTTP_PROXY_PORT":       strconv.Itoa(p.Port),
+				"PC_HTTP_PROXY_USERNAME":   p.Username,
+				"PC_HTTP_PROXY_PASSWORD":   proxyPassword,
+				"PC_HTTP_PROXY_EXCEPTIONS": strings.Join(p.Exceptions, ","),
+			}
+			err, pid, exitCode, stdOut, stdErr := goutils.RunCommandAndWait("", strings.NewReader(c.ProxyActivateScript), "bash", []string{}, env)
+			n.GlobalActivateScriptResult = &ScritpResult{
+				Error:  err,
+				Pid:    pid,
+				Code:   exitCode,
+				Stdout: stdOut,
+				Stderr: stdErr,
+			}
+		}
+
 	} else {
+
 		if c.ProxyDeactivateScript != "" {
 			env := map[string]string{
 				"PC_ACTION":                "deactivate",
@@ -420,7 +457,7 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 				"PC_HTTP_PROXY_EXCEPTIONS": "",
 			}
 			err, pid, exitCode, stdOut, stdErr := goutils.RunCommandAndWait("", strings.NewReader(c.ProxyDeactivateScript), "bash", []string{}, env)
-			activateScriptResult = &ScritpResult{
+			n.GlobalDeactivateScriptResult = &ScritpResult{
 				Error:  err,
 				Pid:    pid,
 				Code:   exitCode,
@@ -428,15 +465,9 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 				Stderr: stdErr,
 			}
 		}
+
 	}
 
-	n := &GlobalProxyChangeResult{
-		Proxy:                p,
-		Reason:               reason,
-		Results:              results,
-		ChangeScriptResult:   changeScriptResult,
-		ActivateScriptResult: activateScriptResult,
-	}
 	c.LastExecutionResults = n
 	for _, l := range c.Listeners {
 		l.OnProxyActivated(n)

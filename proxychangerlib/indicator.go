@@ -402,14 +402,50 @@ func (i *Indicator) ShowLastExecutionResults() {
 			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Before proxy change script", MyGettextv("not configured")))
 		}
 
-		activateScriptResult := i.Config.LastExecutionResults.ActivateScriptResult
-		if activateScriptResult != nil {
-			if activateScriptResult.Error != nil {
-				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Activate proxy script", activateScriptResult.Error))
-			} else if activateScriptResult.Code != 0 {
-				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Activate proxy script", activateScriptResult.Code, activateScriptResult.GetCombinedOutput()))
+		globalActivateScriptResult := i.Config.LastExecutionResults.GlobalActivateScriptResult
+		if globalActivateScriptResult != nil {
+			if globalActivateScriptResult.Error != nil {
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Global activate proxy script", globalActivateScriptResult.Error))
+			} else if globalActivateScriptResult.Code != 0 {
+				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Global activate proxy script", globalActivateScriptResult.Code, globalActivateScriptResult.GetCombinedOutput()))
 			} else {
-				combinedOutput := activateScriptResult.GetCombinedOutput()
+				combinedOutput := globalActivateScriptResult.GetCombinedOutput()
+				if combinedOutput != "" {
+					lines = append(lines, MyGettextv("%v: OK (%v)", "Global activate proxy script", combinedOutput))
+				} else {
+					lines = append(lines, MyGettextv("%v: OK", "Global activate proxy script"))
+				}
+			}
+		} else {
+			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Global activate proxy script", MyGettextv("not configured")))
+		}
+
+		globalDeactivateScriptResult := i.Config.LastExecutionResults.GlobalDeactivateScriptResult
+		if globalDeactivateScriptResult != nil {
+			if globalDeactivateScriptResult.Error != nil {
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Global deactivate proxy script", globalDeactivateScriptResult.Error))
+			} else if globalDeactivateScriptResult.Code != 0 {
+				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Global deactivate proxy script", globalDeactivateScriptResult.Code, globalDeactivateScriptResult.GetCombinedOutput()))
+			} else {
+				combinedOutput := globalDeactivateScriptResult.GetCombinedOutput()
+				if combinedOutput != "" {
+					lines = append(lines, MyGettextv("%v: OK (%v)", "Global deactivate proxy script", combinedOutput))
+				} else {
+					lines = append(lines, MyGettextv("%v: OK", "Global deactivate proxy script"))
+				}
+			}
+		} else {
+			lines = append(lines, MyGettextv("%v: Skipped (%v)", "Global deactivate proxy script", MyGettextv("not configured")))
+		}
+
+		proxyActivateScriptResult := i.Config.LastExecutionResults.ProxyActivateScriptResult
+		if proxyActivateScriptResult != nil {
+			if proxyActivateScriptResult.Error != nil {
+				lines = append(lines, MyGettextv("%v: ERROR (%v)", "Activate proxy script", proxyActivateScriptResult.Error))
+			} else if proxyActivateScriptResult.Code != 0 {
+				lines = append(lines, MyGettextv("%v: WARNING (%v, %v)", "Activate proxy script", proxyActivateScriptResult.Code, proxyActivateScriptResult.GetCombinedOutput()))
+			} else {
+				combinedOutput := proxyActivateScriptResult.GetCombinedOutput()
 				if combinedOutput != "" {
 					lines = append(lines, MyGettextv("%v: OK (%v)", "Activate proxy script", combinedOutput))
 				} else {

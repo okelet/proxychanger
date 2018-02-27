@@ -3,11 +3,13 @@ package proxychangerlib
 import "github.com/juju/loggo"
 
 type GlobalProxyChangeResult struct {
-	Proxy                *Proxy
-	Reason               string
-	Results              []*AppProxyChangeResult
-	ChangeScriptResult   *ScritpResult
-	ActivateScriptResult *ScritpResult
+	Proxy                        *Proxy
+	Reason                       string
+	Results                      []*AppProxyChangeResult
+	ChangeScriptResult           *ScritpResult
+	ProxyActivateScriptResult    *ScritpResult
+	GlobalDeactivateScriptResult *ScritpResult
+	GlobalActivateScriptResult   *ScritpResult
 }
 
 func (n *GlobalProxyChangeResult) GetNumberOfErrors() int {

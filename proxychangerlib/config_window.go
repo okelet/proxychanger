@@ -41,6 +41,8 @@ type ConfigWindow struct {
 	TextBufferOnProxyChangeScript     *gtk.TextBuffer
 	TextViewOnProxyDeactivateScript   *gtk.TextView
 	TextBufferOnProxyDeactivateScript *gtk.TextBuffer
+	TextViewOnProxyActivateScript     *gtk.TextView
+	TextBufferOnProxyActivateScript   *gtk.TextBuffer
 
 	Indicator *Indicator
 }
@@ -174,6 +176,16 @@ func NewConfigWindow(indicator *Indicator) (*ConfigWindow, error) {
 		return nil, errors.Wrap(err, "Error getting textbuffer_proxy_deactivate_script")
 	}
 
+	w.TextViewOnProxyActivateScript, err = w.GetTextView("textview_proxy_activate_script")
+	if err != nil {
+		return nil, errors.Wrap(err, "Error getting textview_proxy_activate_script")
+	}
+
+	w.TextBufferOnProxyActivateScript, err = w.GetTextBuffer("textbuffer_proxy_activate_script")
+	if err != nil {
+		return nil, errors.Wrap(err, "Error getting textbuffer_proxy_activate_script")
+	}
+
 	// ------------------------------------------------------------------------------------
 	// Signals
 	// ------------------------------------------------------------------------------------
@@ -197,6 +209,7 @@ func NewConfigWindow(indicator *Indicator) (*ConfigWindow, error) {
 		"on_button_close_clicked":                       w.OnCloseButtonClicked,
 		"on_textbuffer_proxy_change_script_changed":     w.OnTextbufferProxyChangeScriptChanged,
 		"on_textbuffer_proxy_deactivate_script_changed": w.OnTextbufferProxyDeactivateScriptChanged,
+		"on_textbuffer_proxy_activate_script_changed":   w.OnTextbufferProxyActivateScriptChanged,
 	})
 
 	return &w, nil
@@ -236,6 +249,7 @@ func (w *ConfigWindow) FillData() {
 
 	w.SetTextViewText(w.TextViewOnProxyChangeScript, w.Indicator.Config.ProxyChangeScript)
 	w.SetTextViewText(w.TextViewOnProxyDeactivateScript, w.Indicator.Config.ProxyDeactivateScript)
+	w.SetTextViewText(w.TextViewOnProxyActivateScript, w.Indicator.Config.ProxyActivateScript)
 
 }
 
@@ -749,5 +763,16 @@ func (w *ConfigWindow) OnTextbufferProxyDeactivateScriptChanged() {
 	} else {
 		w.Indicator.Config.ProxyDeactivateScript = text
 		w.Indicator.Config.Save("ProxyDeactivateScript changed")
+	}
+}
+
+func (w *ConfigWindow) OnTextbufferProxyActivateScriptChanged() {
+	text, err := w.GetTextViewText(w.TextViewOnProxyActivateScript)
+	if err != nil {
+		Log.Errorf("Error getting text: %v", err)
+		goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
+	} else {
+		w.Indicator.Config.ProxyActivateScript = text
+		w.Indicator.Config.Save("ProxyActivateScript changed")
 	}
 }
