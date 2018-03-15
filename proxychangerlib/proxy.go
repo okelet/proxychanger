@@ -16,7 +16,8 @@ type Proxy struct {
 	MatchingIps         []string
 	RadioMenuItem       *gtk.RadioMenuItem
 	RadioMenuItemHandle glib.SignalHandle
-	ActivateScript      string
+	// Script to run when this proxy is activated
+	ActivateScript string
 }
 
 func NewEmptyProxy(passwordManager goutils.ProxyPasswordManager) *Proxy {

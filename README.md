@@ -13,6 +13,7 @@ applications:
 * apt (Atom Package Manager)
 * apt/apt-get (Debian/Ubuntu)
 * .bashrc
+* Docker CLI
 * Environment
 * git
 * Gnome
@@ -147,3 +148,10 @@ Very simple:
 - Run the script [`update_translations.sh`](update_translations.sh).
 - Open the file `locale/[new language]/LC_MESSAGES/proxychanger.po` with a tool like [Poedit](https://poedit.net).
 - Commit the changes and create a pull request ([GitHub help](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)).
+
+
+## Me
+
+Website (in spanish): https://okelet.github.io
+
+Email: okelet@gmail.com

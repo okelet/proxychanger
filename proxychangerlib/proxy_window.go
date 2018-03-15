@@ -10,8 +10,9 @@ import (
 
 type ProxyDialog struct {
 	*goutils.BuilderBase
-	ConfigWindow *ConfigWindow
-	Proxy        *Proxy
+	ConfigWindow  *ConfigWindow
+	Proxy         *Proxy
+	AskToSetAfter bool
 
 	Dialog                        *gtk.Dialog
 	EntrySlug                     *gtk.Entry
@@ -26,13 +27,14 @@ type ProxyDialog struct {
 	TextBufferProxyActivateScript *gtk.TextBuffer
 }
 
-func NewProxyDialog(configWindow *ConfigWindow, p *Proxy) (*ProxyDialog, error) {
+func NewProxyDialog(configWindow *ConfigWindow, p *Proxy, askToSetAfter bool) (*ProxyDialog, error) {
 
 	var err error
 
 	w := ProxyDialog{}
 	w.ConfigWindow = configWindow
 	w.Proxy = p
+	w.AskToSetAfter = askToSetAfter
 
 	w.BuilderBase, err = goutils.NewBuilderBase(w.ConfigWindow.Indicator, "assets/proxy.glade")
 	if err != nil {
@@ -276,6 +278,15 @@ func (w *ProxyDialog) OnButtonOkClicked() {
 			w.Dialog.SetFocus(&w.EntryMatchingIps.Widget)
 		}
 		return
+	}
+	if w.AskToSetAfter {
+		if goutils.ConfirmMessage(
+			nil,
+			MyGettextv("Set proxy"),
+			MyGettextv("Do you want to activate this proxy?"),
+		) {
+			w.ConfigWindow.Indicator.Config.SetActiveProxy(p, MyGettextv("Proxy %v added", p.Name), true)
+		}
 	}
 	w.Dialog.Response(gtk.RESPONSE_OK)
 }

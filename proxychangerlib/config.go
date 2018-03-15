@@ -37,21 +37,29 @@ type Configuration struct {
 	WhatToDoWhenNoIpMatches string
 	TimeBetweenIpChecks     int
 
-	ProxyChangeScript     string
+	// Script to run before some proxy activated or deactivated
+	ProxyChangeScript string
+	// Script to run when the proxy is deactivated
 	ProxyDeactivateScript string
-	ProxyActivateScript   string
+	// Script to run when some proxy is activated
+	ProxyActivateScript string
 
+	// List of ids of disabled applications
 	DisabledApplicationsIds []string
 
-	Proxies     []*Proxy
+	// List of proxyes
+	Proxies []*Proxy
+	// Current active proxy
 	ActiveProxy *Proxy
 
+	// List of objects that listens for config events
 	Listeners []ConfigListener
 
+	// Status of the last proxy change result
 	LastExecutionResults *GlobalProxyChangeResult
 }
 
-func NewConfig(configPath string, setActiveProxy bool) (*Configuration, []string, error) {
+func NewConfig(configPath string, setActiveProxy bool) (*Configuration, error) {
 
 	config := &Configuration{}
 	config.Listeners = []ConfigListener{}
@@ -61,14 +69,14 @@ func NewConfig(configPath string, setActiveProxy bool) (*Configuration, []string
 		configPath = DEFAULT_CONFIG_PATH
 	}
 
-	warnings, err := config.Load(configPath, setActiveProxy, false, false)
+	err := config.Load(configPath, setActiveProxy, false, false)
 	if err != nil {
-		return nil, []string{}, err
+		return nil, err
 	}
 
 	config.Filename = configPath
 
-	return config, warnings, nil
+	return config, nil
 
 }
 
@@ -92,9 +100,8 @@ func (c *Configuration) Lock(sessionBus *dbus.Conn) error {
 
 }
 
-func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswordsFromMap bool, saveAfterLoad bool) ([]string, error) {
-
-	warnings := []string{}
+// Loads the configuration from the configPath path.
+func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswordsFromMap bool, saveAfterLoad bool) error {
 
 	failIfNotFound := true
 	if configPath == DEFAULT_CONFIG_PATH {
@@ -104,14 +111,14 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 
 	helper, err := goutils.NewMapHelperFromJsonFile(configPath, failIfNotFound)
 	if err != nil {
-		return warnings, errors.Wrapf(err, MyGettextv("Error loading configuration"))
+		return errors.Wrapf(err, MyGettextv("Error loading configuration"))
 	}
 
 	// Deactivate current proxy, if any
 	if c.ActiveProxy != nil {
 		_, err := c.SetActiveProxy(nil, "Deactivating current proxy while loading configuration", false)
 		if err != nil {
-			return warnings, errors.Wrap(err, MyGettextv("Error deactivating proxy"))
+			return errors.Wrap(err, MyGettextv("Error deactivating proxy"))
 		}
 	}
 
@@ -120,7 +127,7 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 	for ind, _ := range proxiesCopy {
 		err := c.DeleteProxy(proxiesCopy[ind], false)
 		if err != nil {
-			return []string{}, errors.Wrapf(err, MyGettextv("Error deleting proxy %v"), proxiesCopy[ind].Name)
+			return errors.Wrapf(err, MyGettextv("Error deleting proxy %v"), proxiesCopy[ind].Name)
 		}
 	}
 
@@ -157,7 +164,7 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 	for _, s := range c.ExcludedInterfacesRegexps {
 		regexp, err := regexp.Compile(s)
 		if err != nil {
-			return nil, errors.Wrapf(err, "Error compiling regexp %v", s)
+			return errors.Wrapf(err, "Error compiling regexp %v", s)
 		}
 		c.ExcludedInterfacesRegexpsParsed = append(c.ExcludedInterfacesRegexpsParsed, regexp)
 	}
@@ -167,7 +174,7 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 	for _, v := range helper.GetListOfHelpers("proxies") {
 		p, err := NewProxyFromMap(c, v, loadPasswordsFromMap)
 		if err != nil {
-			return []string{}, errors.Wrapf(err, "Error loading proxy")
+			return errors.Wrapf(err, "Error loading proxy")
 		}
 		Log.Debugf("Loaded proxy %v", p.Name)
 		c.AddProxy(false, p)
@@ -191,9 +198,9 @@ func (c *Configuration) Load(configPath string, setActiveProxy bool, loadPasswor
 	}
 
 	if saveAfterLoad {
-		return warnings, c.Save("Saving after load")
+		return c.Save("Saving after load")
 	} else {
-		return warnings, nil
+		return nil
 	}
 
 }
@@ -279,7 +286,7 @@ func (c *Configuration) Save(reason string) error {
 	if err != nil {
 		return errors.Wrap(err, "Error exporting configuration")
 	}
-	return data.SaveToJsonFile(c.Filename)
+	return data.SaveToJsonFile(c.Filename, true)
 }
 
 func (c *Configuration) Export(filename string, includePasswords bool) error {
@@ -288,7 +295,7 @@ func (c *Configuration) Export(filename string, includePasswords bool) error {
 	if err != nil {
 		return errors.Wrap(err, "Error exporting configuration")
 	}
-	return data.SaveToJsonFile(filename)
+	return data.SaveToJsonFile(filename, true)
 }
 
 func (c *Configuration) NoOp() {

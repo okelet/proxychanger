@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/juju/loggo"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/godbus/dbus"
 	"github.com/gosexy/gettext"
@@ -13,7 +14,6 @@ import (
 	"github.com/okelet/goutils"
 	"github.com/okelet/proxychanger/proxychangerlib"
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var Version = "master"
@@ -35,8 +35,8 @@ func main() {
 
 	sessionBus, err := dbus.SessionBus()
 	if err != nil {
-		fmt.Println(proxychangerlib.MyGettextv("Error getting dbus session connection: %v.", err))
-		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error getting dbus session connection: %v.", err))
+		fmt.Println(proxychangerlib.MyGettextv("Error getting D-Bus session connection: %v.", err))
+		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error getting D-Bus session connection: %v.", err))
 		os.Exit(1)
 	}
 
@@ -103,7 +103,7 @@ func main() {
 
 func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool, testMode bool) int {
 
-	config, warnings, err := proxychangerlib.NewConfig(configFile, false)
+	config, err := proxychangerlib.NewConfig(configFile, false)
 	if err != nil {
 		fmt.Println(proxychangerlib.MyGettextv("Error loading configuration: %v.", err))
 		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error loading configuration: %v.", err))
@@ -119,10 +119,6 @@ func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool,
 		fmt.Println(proxychangerlib.MyGettextv("Error locking configuration: %v.", err))
 		goutils.ShowZenityError(proxychangerlib.MyGettextv("Error"), proxychangerlib.MyGettextv("Error locking configuration: %v.", err))
 		return 1
-	}
-
-	if len(warnings) > 0 {
-		// TODO Log
 	}
 
 	if !cmdLogLevelSet {
@@ -148,13 +144,13 @@ func runIndicator(sessionBus *dbus.Conn, configFile string, cmdLogLevelSet bool,
 
 }
 
-func getConfigService(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) (proxychangerlib.ConfigService, []string, error) {
+func getConfigService(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) (proxychangerlib.ConfigService, error) {
 
 	// Get the current list of names to check if already running
 	var names []string
 	err := dbusConnection.BusObject().Call("org.freedesktop.DBus.ListNames", 0).Store(&names)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	if goutils.ListContainsString(names, proxychangerlib.DBUS_INTERFACE) {
@@ -163,21 +159,21 @@ func getConfigService(dbusConnection *dbus.Conn, configFile string, cmdLogLevelS
 	} else {
 
 		// Not running, create a new configuration and lock it
-		config, warnings, err := proxychangerlib.NewConfig(configFile, false)
+		config, err := proxychangerlib.NewConfig(configFile, false)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 
 		err = config.Lock(dbusConnection)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 
 		if !cmdLogLevelSet {
 			proxychangerlib.Log.SetLogLevel(config.LogLevel)
 		}
 
-		return config, warnings, nil
+		return config, nil
 
 	}
 
@@ -185,14 +181,10 @@ func getConfigService(dbusConnection *dbus.Conn, configFile string, cmdLogLevelS
 
 func listProxies(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool, includePasswords bool) int {
 
-	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	c, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
 	if err != nil {
 		fmt.Println("Error", err)
 		return 1
-	}
-
-	if len(warnings) > 0 {
-		// TODO
 	}
 
 	responseData, err := c.ListProxies(includePasswords)
@@ -244,14 +236,10 @@ func listProxies(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bo
 
 func applyActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) int {
 
-	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	c, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
 	if err != nil {
 		fmt.Println("Error", err)
 		return 1
-	}
-
-	if len(warnings) > 0 {
-		// TODO
 	}
 
 	responseData, err := c.ApplyActiveProxy()
@@ -273,14 +261,10 @@ func applyActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLog
 
 func getActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLogLevelSet bool) int {
 
-	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	c, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
 	if err != nil {
 		fmt.Println("Error", err)
 		return 1
-	}
-
-	if len(warnings) > 0 {
-		// TODO
 	}
 
 	responseData, err := c.GetActiveProxySlug()
@@ -304,14 +288,10 @@ func getActiveProxyBySlug(dbusConnection *dbus.Conn, configFile string, cmdLogLe
 
 func setActiveProxyBySlug(dbusConnection *dbus.Conn, slug string, configFile string, cmdLogLevelSet bool) int {
 
-	c, warnings, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
+	c, err := getConfigService(dbusConnection, configFile, cmdLogLevelSet)
 	if err != nil {
 		fmt.Println("Error", err)
 		return 1
-	}
-
-	if len(warnings) > 0 {
-		// TODO
 	}
 
 	responseData, err := c.SetActiveProxyBySlug(slug)

@@ -283,7 +283,8 @@ func (i *Indicator) Run(setProxyNow bool) error {
 
 	// FIXME: try to import both, and detect if they are different
 	var p *Proxy
-	if !i.Config.IndicatorAlreadyRun {
+	firstRun := !i.Config.IndicatorAlreadyRun
+	if firstRun {
 		gnomeProxy, err := goutils.GetGnomeProxy(i.Config)
 		if err != nil {
 			Log.Errorf("Error loading gnome proxy: %v", err)
@@ -319,9 +320,9 @@ func (i *Indicator) Run(setProxyNow bool) error {
 	if setProxyNow {
 		// If just imported
 		if p != nil {
-			i.Config.SetActiveProxy(p, "Startup", true)
+			i.Config.SetActiveProxy(p, MyGettextv("Startup"), true)
 		} else {
-			i.Config.SetActiveProxy(i.Config.ActiveProxy, "Startup", false)
+			i.Config.SetActiveProxy(i.Config.ActiveProxy, MyGettextv("Startup"), false)
 		}
 	}
 
@@ -344,6 +345,20 @@ func (i *Indicator) Run(setProxyNow bool) error {
 		if err != nil {
 			return errors.Wrap(err, MyGettextv("Error starting update check thread"))
 		}
+	}
+
+	if firstRun && len(i.Config.Proxies) == 0 {
+		if goutils.ConfirmMessage(
+			nil,
+			MyGettextv("Initial configuration"),
+			MyGettextv("Do you want to add a proxy?"),
+		) {
+			i.ConfigWindow.FillData()
+			i.ConfigWindow.Window.Show()
+			i.ConfigWindow.Window.Present()
+			i.ConfigWindow.OnButtonProxyAddClicked(true)
+		}
+
 	}
 
 	return nil

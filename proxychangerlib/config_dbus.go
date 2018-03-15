@@ -10,10 +10,10 @@ type ConfigDbus struct {
 	DBusConnection *dbus.Conn
 }
 
-func NewConfigDbus(dbusConnection *dbus.Conn) (*ConfigDbus, []string, error) {
+func NewConfigDbus(dbusConnection *dbus.Conn) (*ConfigDbus, error) {
 	c := ConfigDbus{}
 	c.DBusConnection = dbusConnection
-	return &c, nil, nil
+	return &c, nil
 }
 
 func (c *ConfigDbus) ListProxies(includePasswords bool) (string, *dbus.Error) {

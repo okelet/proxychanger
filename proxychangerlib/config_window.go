@@ -6,8 +6,6 @@ import (
 
 	"github.com/juju/loggo"
 
-	"bytes"
-
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/okelet/goutils"
 	"github.com/pkg/errors"
@@ -421,7 +419,7 @@ func (w *ConfigWindow) OnTreeviewProxiesRowActivated(treeView *gtk.TreeView, pat
 		return
 	}
 
-	d, err := NewProxyDialog(w, p)
+	d, err := NewProxyDialog(w, p, false)
 	if err != nil {
 		Log.Errorf("Error creating dialog: %v", err)
 		goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
@@ -449,9 +447,9 @@ func (w *ConfigWindow) OnTreeviewProxiesSelectionChanged(selection *gtk.TreeSele
 
 }
 
-func (w *ConfigWindow) OnButtonProxyAddClicked() {
+func (w *ConfigWindow) OnButtonProxyAddClicked(askToSetAfter bool) {
 
-	d, err := NewProxyDialog(w, nil)
+	d, err := NewProxyDialog(w, nil, askToSetAfter)
 	if err != nil {
 		Log.Errorf("Error creating dialog: %v", err)
 		goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
@@ -510,7 +508,7 @@ func (w *ConfigWindow) OnButtonProxyEditClicked() {
 		return
 	}
 
-	d, err := NewProxyDialog(w, p)
+	d, err := NewProxyDialog(w, p, false)
 	if err != nil {
 		Log.Errorf("Error creating dialog: %v", err)
 		goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
@@ -709,7 +707,7 @@ func (w *ConfigWindow) OnImportButtonClicked() {
 		filename := chooser.GetFilename()
 		if filename != "" {
 
-			warnings, err := w.Indicator.Config.Load(filename, true, true, true)
+			err := w.Indicator.Config.Load(filename, true, true, true)
 			if err != nil {
 				Log.Errorf("Error importing configuration: %v", err)
 				goutils.ShowMessage(w.Window, gtk.MESSAGE_ERROR, "Error", MyGettextv("Error importing configuration: %v.", err))
@@ -722,15 +720,6 @@ func (w *ConfigWindow) OnImportButtonClicked() {
 			}
 
 			w.FillData()
-			if len(warnings) > 0 {
-				warningText := bytes.NewBufferString("")
-				for _, w := range warnings {
-					Log.Warningf("Warning during import: %v", w)
-					warningText.WriteString(fmt.Sprintf("* %v\n", w))
-				}
-				goutils.ShowMessage(w.Window, gtk.MESSAGE_WARNING, MyGettextv("Warnings during import"), warningText.String())
-
-			}
 
 		} else {
 			Log.Errorf("Empty filename")

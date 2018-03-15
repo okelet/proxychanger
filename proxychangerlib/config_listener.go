@@ -19,6 +19,18 @@ func (n *GlobalProxyChangeResult) GetNumberOfErrors() int {
 			counter += 1
 		}
 	}
+	if n.ChangeScriptResult != nil && (n.ChangeScriptResult.Error != nil || n.ChangeScriptResult.Code != 0) {
+		counter += 1
+	}
+	if n.ProxyActivateScriptResult != nil && (n.ProxyActivateScriptResult.Error != nil || n.ProxyActivateScriptResult.Code != 0) {
+		counter += 1
+	}
+	if n.GlobalDeactivateScriptResult != nil && (n.GlobalDeactivateScriptResult.Error != nil || n.GlobalDeactivateScriptResult.Code != 0) {
+		counter += 1
+	}
+	if n.GlobalActivateScriptResult != nil && (n.GlobalActivateScriptResult.Error != nil || n.GlobalActivateScriptResult.Code != 0) {
+		counter += 1
+	}
 	return counter
 }
 
