@@ -288,8 +288,7 @@ func (i *Indicator) Run(setProxyNow bool) error {
 		gnomeProxy, err := goutils.GetGnomeProxy(i.Config)
 		if err != nil {
 			Log.Errorf("Error loading gnome proxy: %v", err)
-		}
-		if gnomeProxy != nil {
+		} else if gnomeProxy != nil {
 			Log.Infof("Importing gnome proxy %v", gnomeProxy.ToSimpleUrl())
 			p = NewImportedProxy(i.Config, gnomeProxy, MyGettextv("Gnome imported"), "")
 			i.Config.AddProxy(false, p)
@@ -297,8 +296,7 @@ func (i *Indicator) Run(setProxyNow bool) error {
 			envProxy, err := goutils.GetEnvironmentProxy(i.Config)
 			if err != nil {
 				Log.Errorf("Error loading environment proxy: %v", err)
-			}
-			if envProxy != nil {
+			} else if envProxy != nil {
 				Log.Infof("Importing environment proxy %v", envProxy.ToSimpleUrl())
 				p = NewImportedProxy(i.Config, envProxy, MyGettextv("Environment imported"), "")
 				i.Config.AddProxy(false, p)
@@ -356,7 +354,7 @@ func (i *Indicator) Run(setProxyNow bool) error {
 			i.ConfigWindow.FillData()
 			i.ConfigWindow.Window.Show()
 			i.ConfigWindow.Window.Present()
-			i.ConfigWindow.OnButtonProxyAddClicked(true)
+			i.ConfigWindow.ShowAddProxyDialog(true)
 		}
 
 	}

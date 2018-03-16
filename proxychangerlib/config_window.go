@@ -447,7 +447,11 @@ func (w *ConfigWindow) OnTreeviewProxiesSelectionChanged(selection *gtk.TreeSele
 
 }
 
-func (w *ConfigWindow) OnButtonProxyAddClicked(askToSetAfter bool) {
+func (w *ConfigWindow) OnButtonProxyAddClicked() {
+	w.ShowAddProxyDialog(false)
+}
+
+func (w *ConfigWindow) ShowAddProxyDialog(askToSetAfter bool) {
 
 	d, err := NewProxyDialog(w, nil, askToSetAfter)
 	if err != nil {
