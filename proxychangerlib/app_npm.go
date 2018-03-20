@@ -7,9 +7,6 @@ import (
 	"github.com/okelet/goutils"
 )
 
-var NPM_PATH string
-var NPM_INIT_ERROR string
-
 // Register this application in the list of applications
 func init() {
 	RegisterProxifiedApplication(NewNpmProxySetter())
@@ -27,7 +24,7 @@ func (a *NpmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	var err error
 	var url string
 
-	_, err = exec.LookPath("npm")
+	npmPath, err := exec.LookPath("npm")
 	if err != nil {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "npm"), ""}
 	}
@@ -52,9 +49,9 @@ func (a *NpmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 	for _, commandParams := range params {
-		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, NPM_PATH, commandParams, map[string]string{})
+		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, npmPath, commandParams, map[string]string{})
 		if err != nil {
-			fullCommand := strings.Join(append([]string{NPM_PATH}, commandParams...), " ")
+			fullCommand := strings.Join(append([]string{npmPath}, commandParams...), " ")
 			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
 		}
 	}

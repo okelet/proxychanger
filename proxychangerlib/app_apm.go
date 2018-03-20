@@ -7,9 +7,6 @@ import (
 	"github.com/okelet/goutils"
 )
 
-var APM_PATH string
-var APM_INIT_ERROR string
-
 // Register this application in the list of applications
 func init() {
 	RegisterProxifiedApplication(NewApmProxySetter())
@@ -27,7 +24,7 @@ func (a *ApmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	var err error
 	var url string
 
-	_, err = exec.LookPath("apm")
+	apmPath, err := exec.LookPath("apm")
 	if err != nil {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "apm"), ""}
 	}
@@ -52,9 +49,9 @@ func (a *ApmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 	for _, commandParams := range params {
-		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, APM_PATH, commandParams, map[string]string{})
+		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, apmPath, commandParams, map[string]string{})
 		if err != nil {
-			fullCommand := strings.Join(append([]string{APM_PATH}, commandParams...), " ")
+			fullCommand := strings.Join(append([]string{apmPath}, commandParams...), " ")
 			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
 		}
 	}
