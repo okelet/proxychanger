@@ -1,6 +1,7 @@
 package proxychangerlib
 
 import (
+	"os/exec"
 	"strings"
 
 	"github.com/okelet/goutils"
@@ -11,11 +12,6 @@ var NPM_INIT_ERROR string
 
 // Register this application in the list of applications
 func init() {
-	var err error
-	NPM_PATH, err = goutils.Which("npm")
-	if err != nil {
-		NPM_INIT_ERROR = err.Error()
-	}
 	RegisterProxifiedApplication(NewNpmProxySetter())
 }
 
@@ -28,16 +24,13 @@ func NewNpmProxySetter() *NpmProxySetter {
 
 func (a *NpmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
-	if NPM_INIT_ERROR != "" {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error initializing function: %v", NPM_INIT_ERROR)}
-	}
-
-	if NPM_PATH == "" {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "npm"), ""}
-	}
-
 	var err error
 	var url string
+
+	_, err = exec.LookPath("npm")
+	if err != nil {
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "npm"), ""}
+	}
 
 	if p != nil {
 		url, err = p.ToUrl(true)

@@ -1,6 +1,7 @@
 package proxychangerlib
 
 import (
+	"os/exec"
 	"strings"
 
 	"github.com/okelet/goutils"
@@ -11,11 +12,6 @@ var APM_INIT_ERROR string
 
 // Register this application in the list of applications
 func init() {
-	var err error
-	APM_PATH, err = goutils.Which("apm")
-	if err != nil {
-		APM_INIT_ERROR = err.Error()
-	}
 	RegisterProxifiedApplication(NewApmProxySetter())
 }
 
@@ -28,16 +24,13 @@ func NewApmProxySetter() *ApmProxySetter {
 
 func (a *ApmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
-	if APM_INIT_ERROR != "" {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error initializing function: %v", APM_INIT_ERROR)}
-	}
-
-	if APM_PATH == "" {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "apm"), ""}
-	}
-
 	var err error
 	var url string
+
+	_, err = exec.LookPath("apm")
+	if err != nil {
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "apm"), ""}
+	}
 
 	if p != nil {
 		url, err = p.ToUrl(true)

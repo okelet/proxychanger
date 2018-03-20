@@ -2,6 +2,7 @@ package proxychangerlib
 
 import (
 	"os"
+	"os/exec"
 	"path"
 	"strconv"
 	"strings"
@@ -34,12 +35,8 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 
-	codePath, err := goutils.Which("mvn")
+	_, err = exec.LookPath("mvn")
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if command %v exists: %v", "mvn", err)}
-	}
-
-	if codePath == "" {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "mvn"), ""}
 	}
 
@@ -60,7 +57,7 @@ func (a *MavenProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	mvnConfFilePath := path.Join(mvnConfDirPath, "settings.xml")
 	fileExists, err := goutils.FileExists(mvnConfFilePath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", mvnConfDirPath, err)}
+		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", mvnConfDirPath, err)}
 	}
 
 	if fileExists {

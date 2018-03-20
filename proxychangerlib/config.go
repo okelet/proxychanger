@@ -582,7 +582,7 @@ func (c *Configuration) UpdateProxyFromData(save bool, p *Proxy, setSlug bool, n
 
 	if setSlug {
 		if newSlug == "" {
-			return errors.New(MyGettextv("Slug can not be empty")), "slug"
+			newSlug = c.CreateUniqueSlug(newName, p)
 		} else if c.IsSlugAlreadyInUse(newSlug, p) {
 			return errors.New(MyGettextv("Slug already in use")), "slug"
 		}

@@ -5,13 +5,11 @@ import (
 	"github.com/okelet/goutils"
 )
 
-var YUM_CONF_PATH string
-var DNF_CONF_PATH string
+const YUM_CONF_PATH = "/etc/yum.conf"
+const DNF_CONF_PATH = "/etc/dnf/dnf.conf"
 
 // Register this application in the list of applications
 func init() {
-	YUM_CONF_PATH = "/etc/yum.conf"
-	DNF_CONF_PATH = "/etc/dnf/dnf.conf"
 	RegisterProxifiedApplication(NewYumDnfProxySetter())
 }
 
@@ -76,7 +74,7 @@ func (a *YumDnfProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = cfg.SaveTo(confFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"https://github.com/okelet/proxychanger/wiki/Yum\">click here</a> for possible solutions", confFile, err)}
+		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", confFile, err, "https://github.com/okelet/proxychanger/wiki/Yum")}
 	}
 
 	return &AppProxyChangeResult{a, "", ""}

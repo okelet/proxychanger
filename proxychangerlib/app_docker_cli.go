@@ -2,6 +2,7 @@ package proxychangerlib
 
 import (
 	"os"
+	"os/exec"
 	"path"
 	"strings"
 
@@ -24,12 +25,8 @@ func (a *DockerCliProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	var err error
 
-	dockerPath, err := goutils.Which("docker")
+	_, err = exec.LookPath("docker")
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if command %v exists: %v", "docker", err)}
-	}
-
-	if dockerPath == "" {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "docker"), ""}
 	}
 

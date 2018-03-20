@@ -1,21 +1,14 @@
 package proxychangerlib
 
 import (
+	"os/exec"
 	"strings"
 
 	"github.com/okelet/goutils"
 )
 
-var GIT_PATH string
-var GIT_INIT_ERROR string
-
 // Register this application in the list of applications
 func init() {
-	var err error
-	GIT_PATH, err = goutils.Which("git")
-	if err != nil {
-		GIT_INIT_ERROR = err.Error()
-	}
 	RegisterProxifiedApplication(NewGitProxySetter())
 }
 
@@ -28,16 +21,13 @@ func NewGitProxySetter() *GitProxySetter {
 
 func (a *GitProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
-	if GIT_INIT_ERROR != "" {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error initializing function: %v", GIT_INIT_ERROR)}
-	}
-
-	if GIT_PATH == "" {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "git"), ""}
-	}
-
 	var err error
 	var url string
+
+	gitPath, err := exec.LookPath("git")
+	if err != nil {
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "git"), ""}
+	}
 
 	if p != nil {
 		url, err = p.ToUrl(true)
@@ -59,9 +49,9 @@ func (a *GitProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 	for _, commandParams := range params {
-		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, GIT_PATH, commandParams, map[string]string{})
+		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, gitPath, commandParams, map[string]string{})
 		if err != nil {
-			fullCommand := strings.Join(append([]string{GIT_PATH}, commandParams...), " ")
+			fullCommand := strings.Join(append([]string{gitPath}, commandParams...), " ")
 			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
 		}
 	}

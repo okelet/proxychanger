@@ -2,6 +2,7 @@ package proxychangerlib
 
 import (
 	"os"
+	"os/exec"
 	"path"
 
 	"github.com/okelet/goutils"
@@ -23,12 +24,8 @@ func (a *MsVsCodeProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	var err error
 
-	codePath, err := goutils.Which("code")
+	_, err = exec.LookPath("code")
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if command %v exists: %v", "code", err)}
-	}
-
-	if codePath == "" {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "code"), ""}
 	}
 
@@ -40,7 +37,7 @@ func (a *MsVsCodeProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	if !exists {
-		err = os.MkdirAll(codeConfDirPath, os.ModeDir)
+		err = os.MkdirAll(codeConfDirPath, 0777)
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", codeConfDirPath, err)}
 		}

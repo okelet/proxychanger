@@ -117,7 +117,7 @@ func (a *BashrcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 
-	err = ioutil.WriteFile(BASHRC_PATH, lines.Bytes(), 0644)
+	err = ioutil.WriteFile(BASHRC_PATH, lines.Bytes(), 0666)
 	if err != nil {
 		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v", BASHRC_PATH, err)}
 	}

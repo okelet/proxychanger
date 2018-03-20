@@ -52,9 +52,9 @@ func (a *AptProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 			buff.WriteString(fmt.Sprintf("Acquire::%v::proxy \"%v\";\n", proxyType, url))
 		}
 	}
-	err = ioutil.WriteFile(APT_PROXY_FILE, buff.Bytes(), 0640)
+	err = ioutil.WriteFile(APT_PROXY_FILE, buff.Bytes(), 0666)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"https://github.com/okelet/proxychanger/wiki/APT\">click here</a> for possible solutions", APT_PROXY_FILE, err)}
+		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", APT_PROXY_FILE, err, "https://github.com/okelet/proxychanger/wiki/APT")}
 	}
 	return &AppProxyChangeResult{a, "", ""}
 }

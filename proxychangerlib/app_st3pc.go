@@ -2,6 +2,7 @@ package proxychangerlib
 
 import (
 	"os"
+	"os/exec"
 	"path"
 
 	"github.com/okelet/goutils"
@@ -23,12 +24,8 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	var err error
 
-	sublPath, err := goutils.Which("subl")
+	_, err = exec.LookPath("subl")
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if command %v exists: %v", "subl", err)}
-	}
-
-	if sublPath == "" {
 		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "subl"), ""}
 	}
 
@@ -49,7 +46,7 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	if !exists {
-		err = os.MkdirAll(sublConfDirPath, os.ModeDir)
+		err = os.MkdirAll(sublConfDirPath, 0777)
 		if err != nil {
 			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", sublConfDirPath, err)}
 		}

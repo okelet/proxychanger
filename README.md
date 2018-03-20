@@ -14,6 +14,7 @@ applications:
 * apt/apt-get (Debian/Ubuntu)
 * .bashrc
 * Docker CLI
+* Docker Service/Daemon
 * Environment
 * git
 * Gnome
