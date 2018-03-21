@@ -207,7 +207,7 @@ func (i *Indicator) BuildMenu() error {
 			goutils.ShowMessage(nil, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
 			return nil
 		} else {
-			_, err := item.Connect("activate", goutils.XdgOpenFromMenuItem, "https://github.com/okelet/proxychanger/wiki/Install-Update")
+			_, err := item.Connect("activate", goutils.XdgOpenFromMenuItem, fmt.Sprintf("https://github.com/okelet/proxychanger/releases/tag/%v", i.NewVersionDetected))
 			if err != nil {
 				Log.Errorf("Error building GUI: %v.", err)
 				goutils.ShowMessage(nil, gtk.MESSAGE_ERROR, MyGettextv("Error"), MyGettextv("Please review the LOG."))
