@@ -37,9 +37,9 @@ func (a *DockerSrvcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		}
 	}
 
-	_, err = exec.LookPath("docker")
+	_, err = exec.LookPath("dockerd")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "docker"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "dockerd"), ""}
 	}
 
 	systemctlPath, err := exec.LookPath("systemctl")
