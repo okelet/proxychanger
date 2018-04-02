@@ -20,6 +20,7 @@ applications:
 * Gnome
 * Maven
 * npm (Node.js Package Manager)
+* SSH configuration (~/.ssh/config, using `corkscrew`)
 * subversion
 * yum/dnf (Red Hat/CentOS/Fedora)
 * Microsoft Visual Studio Code
