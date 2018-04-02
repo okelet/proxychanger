@@ -30,17 +30,6 @@ func (s *ScritpResult) GetCombinedOutput() string {
 type AppProxyChangeResult struct {
 	Application    ProxifiedApplication
 	SkippedMessage string
+	WarningMessage string
 	ErrorMessage   string
-}
-
-func (p *AppProxyChangeResult) Skipped() bool {
-	return p.SkippedMessage != ""
-}
-
-func (p *AppProxyChangeResult) Success() bool {
-	return p.SkippedMessage == "" && p.ErrorMessage == ""
-}
-
-func (p *AppProxyChangeResult) Error() bool {
-	return p.SkippedMessage == "" && p.ErrorMessage != ""
 }

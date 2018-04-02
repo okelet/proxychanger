@@ -27,34 +27,34 @@ func (a *DockerCliProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	_, err = exec.LookPath("docker")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "docker"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "docker"), "", ""}
 	}
 
 	// Create dirs
 	dockerConfDirPath := path.Join(HOME_DIR, ".docker")
 	exists, err := goutils.DirExists(dockerConfDirPath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", dockerConfDirPath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if directory %v exists: %v", dockerConfDirPath, err)}
 	}
 
 	if !exists {
 		err = os.MkdirAll(dockerConfDirPath, 0777)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", dockerConfDirPath, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error creating directory %v: %v", dockerConfDirPath, err)}
 		}
 	}
 
 	dockerConfFilePath := path.Join(dockerConfDirPath, "config.json")
 	helper, err := goutils.NewMapHelperFromJsonFile(dockerConfFilePath, false)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error loading file %v: %v", dockerConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error loading file %v: %v", dockerConfFilePath, err)}
 	}
 
 	if p != nil {
 		var url string
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 		helper.GetHelper("proxies").GetHelper("default").SetString("httpProxy", url)
 		helper.GetHelper("proxies").GetHelper("default").SetString("httpsProxy", url)
@@ -75,10 +75,10 @@ func (a *DockerCliProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = helper.SaveToJson(true)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error saving file %v: %v", dockerConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error saving file %v: %v", dockerConfFilePath, err)}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

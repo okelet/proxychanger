@@ -28,22 +28,22 @@ func (a *YumDnfProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		password, err = p.GetPassword()
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error getting the proxy password: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error getting the proxy password: %v", err)}
 		}
 	}
 
 	confFile := YUM_CONF_PATH
 	yumExists, err := goutils.FileExists(YUM_CONF_PATH)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", YUM_CONF_PATH, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", YUM_CONF_PATH, err)}
 	}
 	if !yumExists {
 		dnfExists, err := goutils.FileExists(DNF_CONF_PATH)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", DNF_CONF_PATH, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", DNF_CONF_PATH, err)}
 		}
 		if !dnfExists {
-			return &AppProxyChangeResult{a, MyGettextv("Current system doesn't seem to have Yum/Dnf (none of %v and %v files exist)", YUM_CONF_PATH, DNF_CONF_PATH), ""}
+			return &AppProxyChangeResult{a, MyGettextv("Current system doesn't seem to have Yum/Dnf (none of %v and %v files exist)", YUM_CONF_PATH, DNF_CONF_PATH), "", ""}
 		} else {
 			confFile = DNF_CONF_PATH
 		}
@@ -51,7 +51,7 @@ func (a *YumDnfProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	cfg, err := ini.LoadSources(ini.LoadOptions{Loose: true}, confFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", confFile, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v", confFile, err)}
 	}
 
 	section := cfg.Section("main")
@@ -74,10 +74,10 @@ func (a *YumDnfProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = cfg.SaveTo(confFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", confFile, err, "https://github.com/okelet/proxychanger/wiki/Yum")}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", confFile, err, "https://github.com/okelet/proxychanger/wiki/Yum")}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

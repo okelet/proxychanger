@@ -26,13 +26,13 @@ func (a *ApmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	apmPath, err := exec.LookPath("apm")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "apm"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "apm"), "", ""}
 	}
 
 	if p != nil {
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 	}
 
@@ -52,10 +52,10 @@ func (a *ApmProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, apmPath, commandParams, map[string]string{})
 		if err != nil {
 			fullCommand := strings.Join(append([]string{apmPath}, commandParams...), " ")
-			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
 		}
 	}
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 }
 
 func (a *ApmProxySetter) GetId() string {

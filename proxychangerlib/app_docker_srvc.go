@@ -33,31 +33,31 @@ func (a *DockerSrvcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 	}
 
 	_, err = exec.LookPath("dockerd")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "dockerd"), ""}
+		return &AppProxyChangeResult{a, "", MyGettextv("Command %v not found", "dockerd"), ""}
 	}
 
 	systemctlPath, err := exec.LookPath("systemctl")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "systemctl"), ""}
+		return &AppProxyChangeResult{a, "", MyGettextv("Command %v not found", "systemctl"), ""}
 	}
 
 	// Create dirs
 	dockerConfDirPath := path.Join("/etc/systemd/system/docker.service.d")
 	exists, err := goutils.DirExists(dockerConfDirPath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfDirPath, err, helpUrl)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if directory %v exists: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfDirPath, err, helpUrl)}
 	}
 
 	if !exists {
 		err = os.MkdirAll(dockerConfDirPath, 0777)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error creating the directory %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfDirPath, err, helpUrl)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error creating the directory %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfDirPath, err, helpUrl)}
 		}
 	}
 
@@ -66,13 +66,13 @@ func (a *DockerSrvcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	fileExists, err := goutils.FileExists(dockerConfFilePath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
 	}
 
 	if fileExists {
 		oldContent, err = ioutil.ReadFile(dockerConfFilePath)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
 		}
 	}
 
@@ -90,26 +90,26 @@ func (a *DockerSrvcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 		err = ioutil.WriteFile(dockerConfFilePath, buff.Bytes(), 0666)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", dockerConfFilePath, err, helpUrl)}
 		}
 
 		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, "sudo", []string{"-n", systemctlPath, "daemon-reload"}, map[string]string{})
 		fullCommand := strings.Join([]string{"sudo", "-n", systemctlPath, "daemon-reload"}, " ")
 		Log.Debugf("Running command %v...", fullCommand)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v; <a href=\"%v\">click here</a> for possible solutions", fullCommand, exitCode, goutils.CombineStdErrOutput(outBuff, errBuff), helpUrl)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error running command %v (%v): %v; <a href=\"%v\">click here</a> for possible solutions", fullCommand, exitCode, goutils.CombineStdErrOutput(outBuff, errBuff), helpUrl)}
 		}
 
 		err, _, exitCode, outBuff, errBuff = goutils.RunCommandAndWait("", nil, "sudo", []string{"-n", systemctlPath, "restart", "docker.service"}, map[string]string{})
 		fullCommand = strings.Join([]string{"sudo", "-n", systemctlPath, "restart", "docker.service"}, " ")
 		Log.Debugf("Running command %v...", fullCommand)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v; <a href=\"%v\">click here</a> for possible solutions", fullCommand, exitCode, goutils.CombineStdErrOutput(outBuff, errBuff), helpUrl)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error running command %v (%v): %v; <a href=\"%v\">click here</a> for possible solutions", fullCommand, exitCode, goutils.CombineStdErrOutput(outBuff, errBuff), helpUrl)}
 		}
 
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

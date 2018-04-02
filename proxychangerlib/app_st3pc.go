@@ -26,7 +26,7 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	_, err = exec.LookPath("subl")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "subl"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "subl"), "", ""}
 	}
 
 	var password string
@@ -34,7 +34,7 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		password, err = p.GetPassword()
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error getting proxy password: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error getting proxy password: %v", err)}
 		}
 	}
 
@@ -42,20 +42,20 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	sublConfDirPath := path.Join(HOME_DIR, ".config", "sublime-text-3", "Packages", "User")
 	exists, err := goutils.DirExists(sublConfDirPath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", sublConfDirPath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if directory %v exists: %v", sublConfDirPath, err)}
 	}
 
 	if !exists {
 		err = os.MkdirAll(sublConfDirPath, 0777)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", sublConfDirPath, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error creating directory %v: %v", sublConfDirPath, err)}
 		}
 	}
 
 	sublConfFilePath := path.Join(sublConfDirPath, "settings.json")
 	confData, err := goutils.LoadJsonFileAsMap(sublConfFilePath, false)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", sublConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v", sublConfFilePath, err)}
 	}
 
 	if p != nil {
@@ -76,10 +76,10 @@ func (a *S3tpcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = goutils.SaveMapAsJsonFile(sublConfFilePath, confData)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error saving file %v: %v", sublConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error saving file %v: %v", sublConfFilePath, err)}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

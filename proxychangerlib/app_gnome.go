@@ -24,9 +24,9 @@ func (a *GnomeProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		err = goutils.SetGnomeProxy(nil)
 	}
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error setting the Gnome settings: %v", err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error setting the Gnome settings: %v", err)}
 	}
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 }
 
 func (a *GnomeProxySetter) GetId() string {

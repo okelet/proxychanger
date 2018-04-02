@@ -30,20 +30,20 @@ func (a *AptProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 	}
 
 	stat, err := os.Stat(DEBIAN_ETC_VERSION)
 	if err != nil {
 		if !os.IsNotExist(err) {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error detecting if the current system is Debian Based using file %v: %v", DEBIAN_ETC_VERSION, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error detecting if the current system is Debian Based using file %v: %v", DEBIAN_ETC_VERSION, err)}
 		} else {
-			return &AppProxyChangeResult{a, MyGettextv("Current system doesn't seem to be Debian Based (file %v doesn't exist)", DEBIAN_ETC_VERSION), ""}
+			return &AppProxyChangeResult{a, "", MyGettextv("Current system doesn't seem to be Debian Based (file %v doesn't exist)", DEBIAN_ETC_VERSION), ""}
 		}
 	}
 	if stat.IsDir() {
-		return &AppProxyChangeResult{a, "", MyGettextv("Path %v is a directory, and it should be a file", DEBIAN_ETC_VERSION)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Path %v is a directory, and it should be a file", DEBIAN_ETC_VERSION)}
 	}
 
 	buff := bytes.NewBufferString("")
@@ -54,9 +54,9 @@ func (a *AptProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 	err = ioutil.WriteFile(APT_PROXY_FILE, buff.Bytes(), 0666)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", APT_PROXY_FILE, err, "https://github.com/okelet/proxychanger/wiki/APT")}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error writing the file %v: %v; <a href=\"%v\">click here</a> for possible solutions", APT_PROXY_FILE, err, "https://github.com/okelet/proxychanger/wiki/APT")}
 	}
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 }
 
 func (a *AptProxySetter) GetId() string {

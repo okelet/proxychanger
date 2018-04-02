@@ -26,27 +26,27 @@ func (a *MsVsCodeProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	_, err = exec.LookPath("code")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "code"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "code"), "", ""}
 	}
 
 	// Create dirs
 	codeConfDirPath := path.Join(HOME_DIR, ".config", "Code", "User")
 	exists, err := goutils.DirExists(codeConfDirPath)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", codeConfDirPath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if directory %v exists: %v", codeConfDirPath, err)}
 	}
 
 	if !exists {
 		err = os.MkdirAll(codeConfDirPath, 0777)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", codeConfDirPath, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error creating directory %v: %v", codeConfDirPath, err)}
 		}
 	}
 
 	codeConfFilePath := path.Join(codeConfDirPath, "settings.json")
 	confData, err := goutils.LoadJsonFileAsMap(codeConfFilePath, false)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", codeConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v", codeConfFilePath, err)}
 	}
 
 	if p != nil {
@@ -57,10 +57,10 @@ func (a *MsVsCodeProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = goutils.SaveMapAsJsonFile(codeConfFilePath, confData)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error saving file %v: %v", codeConfFilePath, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error saving file %v: %v", codeConfFilePath, err)}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

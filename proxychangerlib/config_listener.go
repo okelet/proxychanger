@@ -15,7 +15,7 @@ type GlobalProxyChangeResult struct {
 func (n *GlobalProxyChangeResult) GetNumberOfErrors() int {
 	counter := 0
 	for _, r := range n.Results {
-		if !r.Skipped() && !r.Success() {
+		if r.SkippedMessage == "" && r.ErrorMessage != "" {
 			counter += 1
 		}
 	}

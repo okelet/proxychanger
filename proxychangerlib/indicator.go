@@ -470,12 +470,14 @@ func (i *Indicator) ShowLastExecutionResults() {
 		}
 
 		for _, r := range i.Config.LastExecutionResults.Results {
-			if r.Skipped() {
+			if r.SkippedMessage != "" {
 				lines = append(lines, MyGettextv("%v: Skipped (%v)", r.Application.GetSimpleName(), r.SkippedMessage))
-			} else if r.Success() {
-				lines = append(lines, MyGettextv("%v: OK", r.Application.GetSimpleName()))
-			} else {
+			} else if r.ErrorMessage != "" {
 				lines = append(lines, MyGettextv("%v: ERROR (%v)", r.Application.GetSimpleName(), r.ErrorMessage))
+			} else if r.WarningMessage != "" {
+				lines = append(lines, MyGettextv("%v: WARNING (%v)", r.Application.GetSimpleName(), r.WarningMessage))
+			} else {
+				lines = append(lines, MyGettextv("%v: OK", r.Application.GetSimpleName()))
 			}
 		}
 

@@ -48,7 +48,7 @@ func (a *BashrcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	if BASHRC_INIT_ERROR != "" {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error initializing function: %v", BASHRC_INIT_ERROR)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error initializing function: %v", BASHRC_INIT_ERROR)}
 	}
 
 	var err error
@@ -57,30 +57,30 @@ func (a *BashrcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 	}
 
 	bashrcExists, err := goutils.FileExists(BASHRC_PATH)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", BASHRC_PATH, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", BASHRC_PATH, err)}
 	} else if bashrcExists {
 		bashrcBackup := BASHRC_PATH + ".proxychanger_backup"
 		bashrcBackupExists, err := goutils.FileExists(bashrcBackup)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", BASHRC_PATH, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", BASHRC_PATH, err)}
 		}
 		if !bashrcBackupExists {
 			err := goutils.CopyFile(BASHRC_PATH, bashrcBackup)
 			if err != nil {
-				return &AppProxyChangeResult{a, "", MyGettextv("Error backing up file %v to %v: %v", BASHRC_PATH, bashrcBackup, err)}
+				return &AppProxyChangeResult{a, "", "", MyGettextv("Error backing up file %v to %v: %v", BASHRC_PATH, bashrcBackup, err)}
 			}
 		}
 	}
 
 	file, err := os.Open(BASHRC_PATH)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error opening file %v: %v", BASHRC_PATH, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error opening file %v: %v", BASHRC_PATH, err)}
 	}
 	defer file.Close()
 
@@ -101,7 +101,7 @@ func (a *BashrcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", BASHRC_PATH, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v", BASHRC_PATH, err)}
 	}
 
 	if p != nil {
@@ -119,10 +119,10 @@ func (a *BashrcProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = ioutil.WriteFile(BASHRC_PATH, lines.Bytes(), 0666)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v", BASHRC_PATH, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error writing the file %v: %v", BASHRC_PATH, err)}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

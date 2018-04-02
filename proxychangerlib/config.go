@@ -390,7 +390,7 @@ func (c *Configuration) SetActiveProxy(p *Proxy, reason string, save bool) (*Glo
 		} else {
 			result = a.Apply(nil)
 		}
-		if !result.Skipped() && !result.Success() {
+		if result.SkippedMessage == "" && result.ErrorMessage != "" {
 			Log.Errorf("Error applying proxy in application %v: %v.\n", a.GetSimpleName(), result.ErrorMessage)
 		}
 		results = append(results, result)

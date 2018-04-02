@@ -29,7 +29,7 @@ func (a *SvnProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	_, err = exec.LookPath("svn")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "svn"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "svn"), "", ""}
 	}
 
 	var password string
@@ -37,44 +37,44 @@ func (a *SvnProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 	if p != nil {
 		password, err = p.GetPassword()
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error getting the proxy password: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error getting the proxy password: %v", err)}
 		}
 	}
 
 	svnConfigDir := path.Join(HOME_DIR, ".subversion")
 	exists, err := goutils.DirExists(svnConfigDir)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if directory %v exists: %v", svnConfigDir, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if directory %v exists: %v", svnConfigDir, err)}
 	}
 
 	if !exists {
 		err = os.Mkdir(svnConfigDir, 0777)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error creating directory %v: %v", svnConfigDir, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error creating directory %v: %v", svnConfigDir, err)}
 		}
 	}
 
 	svnConfigFile := path.Join(svnConfigDir, "servers")
 	serversExists, err := goutils.FileExists(svnConfigFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", svnConfigFile, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", svnConfigFile, err)}
 	} else if serversExists {
 		serversBackup := svnConfigFile + ".proxychanger_backup"
 		serversBackupExists, err := goutils.FileExists(serversBackup)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error checking if file %v exists: %v", serversBackup, err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error checking if file %v exists: %v", serversBackup, err)}
 		}
 		if !serversBackupExists {
 			err := goutils.CopyFile(svnConfigFile, serversBackup)
 			if err != nil {
-				return &AppProxyChangeResult{a, "", MyGettextv("Error backing up file %v to %v: %v", svnConfigFile, serversBackup, err)}
+				return &AppProxyChangeResult{a, "", "", MyGettextv("Error backing up file %v to %v: %v", svnConfigFile, serversBackup, err)}
 			}
 		}
 	}
 
 	cfg, err := ini.LoadSources(ini.LoadOptions{Loose: true}, svnConfigFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error reading file %v: %v", svnConfigFile, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error reading file %v: %v", svnConfigFile, err)}
 	}
 
 	section := cfg.Section("global")
@@ -105,10 +105,10 @@ func (a *SvnProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	err = cfg.SaveTo(svnConfigFile)
 	if err != nil {
-		return &AppProxyChangeResult{a, "", MyGettextv("Error writing the file %v: %v", svnConfigFile, err)}
+		return &AppProxyChangeResult{a, "", "", MyGettextv("Error writing the file %v: %v", svnConfigFile, err)}
 	}
 
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 
 }
 

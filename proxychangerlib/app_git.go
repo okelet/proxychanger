@@ -26,13 +26,13 @@ func (a *GitProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 
 	gitPath, err := exec.LookPath("git")
 	if err != nil {
-		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "git"), ""}
+		return &AppProxyChangeResult{a, MyGettextv("Command %v not found", "git"), "", ""}
 	}
 
 	if p != nil {
 		url, err = p.ToUrl(true)
 		if err != nil {
-			return &AppProxyChangeResult{a, "", MyGettextv("Error generating proxy URL: %v", err)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error generating proxy URL: %v", err)}
 		}
 	}
 
@@ -52,10 +52,10 @@ func (a *GitProxySetter) Apply(p *Proxy) *AppProxyChangeResult {
 		err, _, exitCode, outBuff, errBuff := goutils.RunCommandAndWait("", nil, gitPath, commandParams, map[string]string{})
 		if err != nil {
 			fullCommand := strings.Join(append([]string{gitPath}, commandParams...), " ")
-			return &AppProxyChangeResult{a, "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
+			return &AppProxyChangeResult{a, "", "", MyGettextv("Error running command %v (%v): %v/%v", fullCommand, exitCode, outBuff, errBuff)}
 		}
 	}
-	return &AppProxyChangeResult{a, "", ""}
+	return &AppProxyChangeResult{a, "", "", ""}
 }
 
 func (a *GitProxySetter) GetId() string {
