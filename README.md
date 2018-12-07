@@ -1,4 +1,3 @@
-
 # Proxy changer
 
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/okelet/Lobby)
@@ -6,6 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/okelet/proxychanger.svg)](https://github.com/okelet/proxychanger/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/okelet/proxychanger/total.svg)](https://github.com/okelet/proxychanger/releases)
 [![buy me a coffee](https://img.shields.io/badge/☕-buy%20me%20a%20coffee-blue.svg)](https://paypal.me/okelet/5)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fokelet%2Fproxychanger.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fokelet%2Fproxychanger?ref=badge_shield)
 
 Proxy changer is an application that allows you to define multiple proxies and change the settings of multiple
 applications:
@@ -157,3 +157,7 @@ Very simple:
 Website (in spanish): https://okelet.github.io
 
 Email: okelet@gmail.com
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fokelet%2Fproxychanger.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fokelet%2Fproxychanger?ref=badge_large)
